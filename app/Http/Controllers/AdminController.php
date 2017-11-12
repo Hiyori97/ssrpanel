@@ -158,9 +158,9 @@ class AdminController extends BaseController
             // 密码为空时则生成随机密码
             if (empty($password)) {
                 $str = $this->makeRandStr();
-                $password = md5($str);
+                $password = hash("sha256", $str);
             } else {
-                $password = md5($password);
+                $password = hash("sha256", $password);
             }
 
             $ret = User::query()->create([
@@ -274,7 +274,7 @@ class AdminController extends BaseController
             ];
 
             if (!empty($password)) {
-                $data['password'] = md5($password);
+                $data['password'] = hash("sha256", $password);
             }
 
             $ret = User::query()->where('id', $id)->update($data);
@@ -858,7 +858,7 @@ class AdminController extends BaseController
                 foreach ($data as $user) {
                     $obj = new User();
                     $obj->username = $user->user;
-                    $obj->password = md5('123456');
+                    $obj->password = hash("sha256", '123456');
                     $obj->port = $user->port;
                     $obj->passwd = $user->passwd;
                     $obj->transfer_enable = $user->transfer_enable;
@@ -994,8 +994,8 @@ TXT;
             $old_password = $request->get('old_password');
             $new_password = $request->get('new_password');
 
-            $old_password = md5(trim($old_password));
-            $new_password = md5(trim($new_password));
+            $old_password = hash("sha256", trim($old_password));
+            $new_password = hash("sha256", trim($new_password));
 
             $user = User::query()->where('id', $user['id'])->first();
             if ($user->password != $old_password) {

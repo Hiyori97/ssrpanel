@@ -47,7 +47,7 @@ class LoginController extends BaseController
                 }
             }
 
-            $user = User::query()->where('username', $username)->where('password', md5($password))->first();
+            $user = User::query()->where('username', $username)->where('password', hash("sha256", $password))->first();
             if (!$user) {
                 $request->session()->flash('errorMsg', '用户名或密码错误');
 

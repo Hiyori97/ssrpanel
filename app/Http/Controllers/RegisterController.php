@@ -50,7 +50,7 @@ class RegisterController extends BaseController
                 $request->session()->flash('errorMsg', '请重新输入密码');
 
                 return Redirect::back()->withInput();
-            } else if (md5($password) != md5($repassword)) {
+            } else if (hash("sha256", $password) != hash("sha256", $repassword)) {
                 $request->session()->flash('errorMsg', '两次输入密码不一致，请重新输入');
 
                 return Redirect::back()->withInput($request->except(['password', 'repassword']));
@@ -122,7 +122,7 @@ class RegisterController extends BaseController
             $transfer_enable = $referral_uid ? (self::$config['default_traffic'] + self::$config['referral_traffic']) * 1048576 : self::$config['default_traffic'] * 1048576;
             $user = new User();
             $user->username = $username;
-            $user->password = md5($password);
+            $user->password = hash("sha256", $password);
             $user->port = $port;
             $user->passwd = $this->makeRandStr();
             $user->transfer_enable = $transfer_enable;
@@ -143,7 +143,7 @@ class RegisterController extends BaseController
             // 发送邮件
             if (self::$config['is_active_register']) {
                 // 生成激活账号的地址
-                $token = md5(self::$config['website_name'] . $username . microtime());
+                $token = hash("sha256", self::$config['website_name'] . $username . microtime());
                 $verify = new Verify();
                 $verify->user_id = $user->id;
                 $verify->username = $username;

@@ -92,8 +92,8 @@ class UserController extends BaseController
 
             // 修改密码
             if (!empty($old_password) && !empty($new_password)) {
-                $old_password = md5(trim($old_password));
-                $new_password = md5(trim($new_password));
+                $old_password = hash("sha256", trim($old_password));
+                $new_password = hash("sha256", trim($new_password));
 
                 $user = User::query()->where('id', $user['id'])->first();
                 if ($user->password != $old_password) {
@@ -601,7 +601,7 @@ TXT;
                 $request->session()->flash('errorMsg', '密码不能为空');
 
                 return Redirect::back();
-            } else if (md5($password) != md5($repassword)) {
+            } else if (hash("sha256", $password) != hash("sha256", $repassword)) {
                 $request->session()->flash('errorMsg', '两次输入密码不一致，请重新输入');
 
                 return Redirect::back();
@@ -619,14 +619,14 @@ TXT;
                 $request->session()->flash('errorMsg', '账号已被禁用');
 
                 return Redirect::back();
-            } else if (md5($password) == $verify->user->password) {
+            } else if (hash("sha256", $password) == $verify->user->password) {
                 $request->session()->flash('errorMsg', '新旧密码一样，请重新输入');
 
                 return Redirect::back();
             }
 
             // 更新密码
-            $ret = User::query()->where('id', $verify->user_id)->update(['password' => md5($password)]);
+            $ret = User::query()->where('id', $verify->user_id)->update(['password' => hash("sha256", $password)]);
             if (!$ret) {
                 $request->session()->flash('errorMsg', '重设密码失败');
 
