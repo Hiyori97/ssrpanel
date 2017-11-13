@@ -794,7 +794,7 @@ TXT;
 
                 // 将商品的有效期加到账号上，如果账号过期时间小于
                 //if (date('Y-m-d H:i:s', strtotime("+" . $goods->days . " days")) ) {}
-                User::query()->where('id', $user['id'])->update(['expire_time' => date('Y-m-d H:i:s', strtotime("+" . $goods->days . " days"))]);
+                User::query()->where('id', $user['id'])->update(['expire_time' => date('Y-m-d H:i:s', strtotime("+" . $goods->days . " days", strtotime($user->expire_time)))]);
 
                 // 写入返利日志
                 if ($user->referral_uid) {
