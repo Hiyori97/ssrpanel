@@ -44,3 +44,5 @@ Disallow: /database/
 Disallow: /resources/
 Disallow: /routes/
 Disallow: /vendor
+User-agent: *
+Disallow: /
