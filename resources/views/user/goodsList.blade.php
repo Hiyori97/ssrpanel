@@ -237,7 +237,7 @@
                     <div class="portlet-title">
                         <div class="caption font-dark">
                             <i class="icon-basket font-dark"></i>
-                            <span class="caption-subject bold uppercase"> 流量加油包 <small>到期后自动扣除</small> </span>
+                            <span class="caption-subject bold uppercase"> 流量时长包 </span>
                         </div>
                     </div>
                     <div class="portlet-body">
@@ -283,7 +283,7 @@
                         </div>
                         <div class="row">
                             <div class="col-md-4 col-sm-4">
-                                <div class="dataTables_info" role="status" aria-live="polite">共 {{$goodsList->total()}} 个流量包</div>
+                                <div class="dataTables_info" role="status" aria-live="polite">共 {{$goodsList->total()}} 个商品</div>
                             </div>
                             <div class="col-md-8 col-sm-8">
                                 <div class="dataTables_paginate paging_bootstrap_full_number pull-right">
