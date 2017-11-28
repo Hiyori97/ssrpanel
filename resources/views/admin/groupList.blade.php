@@ -15,7 +15,7 @@
                 <i class="fa fa-circle"></i>
             </li>
             <li>
-                <a href="{{url('admin/groupList')}}">节点分组列表</a>
+                <a href="{{url('admin/groupList')}}">节点分组</a>
             </li>
         </ul>
         <!-- END PAGE BREADCRUMB -->
@@ -27,7 +27,7 @@
                     <div class="portlet-title">
                         <div class="caption font-dark">
                             <i class="icon-grid font-dark"></i>
-                            <span class="caption-subject bold uppercase"> 节点分组列表 </span>
+                            <span class="caption-subject bold uppercase"> 节点分组 </span>
                         </div>
                         <div class="actions">
                             <div class="btn-group">
@@ -91,7 +91,6 @@
     <!-- END CONTENT BODY -->
 @endsection
 @section('script')
-    <script src="/assets/global/plugins/bootbox/bootbox.min.js" type="text/javascript"></script>
     <script src="/js/layer/layer.js" type="text/javascript"></script>
 
     <script type="text/javascript">
@@ -107,29 +106,16 @@
 
         // 删除节点分组
         function delGroup(id) {
-            bootbox.confirm({
-                message: "确定删除节点？",
-                buttons: {
-                    confirm: {
-                        label: '确定',
-                        className: 'btn-success'
-                    },
-                    cancel: {
-                        label: '取消',
-                        className: 'btn-danger'
-                    }
-                },
-                callback: function (result) {
-                    if (result) {
-                        $.post("{{url('admin/delGroup')}}", {_token:'{{csrf_token()}}', id:id}, function(ret) {
-                            layer.msg(ret.message, {time:1000}, function() {
-                                if (ret.status == 'success') {
-                                    window.location.reload();
-                                }
-                            });
-                        });
-                    }
-                }
+            layer.confirm('确定删除分组？', {icon: 2, title:'警告'}, function(index) {
+                $.post("{{url('admin/delGroup')}}", {id:id, _token:'{{csrf_token()}}'}, function(ret) {
+                    layer.msg(ret.message, {time:1000}, function() {
+                        if (ret.status == 'success') {
+                            window.location.reload();
+                        }
+                    });
+                });
+
+                layer.close(index);
             });
         }
     </script>

@@ -351,6 +351,11 @@
                                                             </div>
                                                         </div>
                                                         <div class="col-md-6">
+                                                            <label for="is_traffic_ban" class="col-md-3 control-label">异常自动封号</label>
+                                                            <div class="col-md-9">
+                                                                <input type="checkbox" class="make-switch" @if($is_traffic_ban) checked @endif id="is_traffic_ban" data-on-color="success" data-off-color="danger" data-on-text="启用" data-off-text="关闭">
+                                                                <span class="help-block"> 24小时内流量超过异常阈值则自动封号 </span>
+                                                            </div>
                                                         </div>
                                                     </div>
                                                     <div class="form-group">
@@ -397,6 +402,34 @@
                                                             </div>
                                                         </div>
                                                     </div>
+                                                    <div class="form-group">
+                                                        <div class="col-md-6">
+                                                            <label for="traffic_ban_value" class="col-md-3 control-label">流量异常阈值</label>
+                                                            <div class="col-md-9">
+                                                                <div class="input-group">
+                                                                    <input class="form-control" type="text" name="traffic_ban_value" value="{{$traffic_ban_value}}" id="traffic_ban_value" />
+                                                                    <span class="input-group-addon">GiB</span>
+                                                                    <span class="input-group-btn">
+                                                                        <button class="btn btn-success" type="button" onclick="setTrafficBanValue()">修改</button>
+                                                                    </span>
+                                                                </div>
+                                                                <span class="help-block"> 24小时内超过该值，则触发自动封号 </span>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <label for="traffic_ban_time" class="col-md-3 control-label">封号时长</label>
+                                                            <div class="col-md-9">
+                                                                <div class="input-group">
+                                                                    <input class="form-control" type="text" name="traffic_ban_time" value="{{$traffic_ban_time}}" id="traffic_ban_time" />
+                                                                    <span class="input-group-addon">分钟</span>
+                                                                    <span class="input-group-btn">
+                                                                        <button class="btn btn-success" type="button" onclick="setTrafficBanTime()">修改</button>
+                                                                    </span>
+                                                                </div>
+                                                                <span class="help-block"> 触发流量异常导致账号被封禁的时长，到期后自动解封 </span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
                                                 </div>
                                             </form>
                                         </div>
@@ -406,8 +439,8 @@
                                                     <div class="portlet-body">
                                                         <div class="form-group">
                                                             <div class="col-md-6">
-                                                                <label class="col-md-5 control-label">微信</label>
-                                                                <div class="col-md-7">
+                                                                <label class="control-label col-md-3">微信</label>
+                                                                <div class="col-md-9">
                                                                     <div class="fileinput fileinput-new" data-provides="fileinput">
                                                                         <div class="fileinput-new thumbnail" style="width: 200px; height: 150px;">
                                                                             @if ($wechat_qrcode)
@@ -428,9 +461,12 @@
                                                                     </div>
                                                                 </div>
                                                             </div>
+                                                            <div class="col-md-6"></div>
+                                                        </div>
+                                                        <div class="form-group">
                                                             <div class="col-md-6">
-                                                                <label class="col-md-5 control-label">支付宝</label>
-                                                                <div class="col-md-7">
+                                                                <label class="control-label col-md-3">支付宝</label>
+                                                                <div class="col-md-9">
                                                                     <div class="fileinput fileinput-new" data-provides="fileinput">
                                                                         <div class="fileinput-new thumbnail" style="width: 200px; height: 150px;">
                                                                             @if ($alipay_qrcode)
@@ -451,12 +487,13 @@
                                                                     </div>
                                                                 </div>
                                                             </div>
+                                                            <div class="col-md-6"></div>
                                                         </div>
                                                     </div>
                                                 </div>
                                                 <div class="form-actions">
                                                     <div class="row">
-                                                        <div class="col-md-offset-6 col-md-6">
+                                                        <div class="col-md-offset-2 col-md-9">
                                                             <input type="hidden" name="_token" value="{{csrf_token()}}" />
                                                             <button type="submit" class="btn green">提 交</button>
                                                         </div>
@@ -478,7 +515,6 @@
     <!-- END CONTENT BODY -->
 @endsection
 @section('script')
-    <script src="/assets/global/plugins/bootbox/bootbox.min.js" type="text/javascript"></script>
     <script src="/assets/global/plugins/bootstrap-switch/js/bootstrap-switch.min.js" type="text/javascript"></script>
     <script src="/assets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.js" type="text/javascript"></script>
     <script src="/js/layer/layer.js" type="text/javascript"></script>
@@ -635,6 +671,43 @@
                 });
             }
         });
+
+        // 启用、禁用流量异常自动封号
+        $('#is_traffic_ban').on({
+            'switchChange.bootstrapSwitch': function(event, state) {
+                var is_traffic_ban = state ? 1 : 0;
+
+                $.post("{{url('admin/setConfig')}}", {_token:'{{csrf_token()}}', name:'is_traffic_ban', value:is_traffic_ban}, function (ret) {
+                    console.log(ret);
+                });
+            }
+        });
+
+        // 流量异常阈值
+        function setTrafficBanValue() {
+            var traffic_ban_value = $("#traffic_ban_value").val();
+
+            $.post("{{url('admin/setConfig')}}", {_token:'{{csrf_token()}}', name:'traffic_ban_value', value:traffic_ban_value}, function (ret) {
+                if (ret.status == 'success') {
+                    layer.msg(ret.message, {time:1000}, function() {
+                        window.location.reload();
+                    });
+                }
+            });
+        }
+
+        // 设置账号封号时长
+        function setTrafficBanTime() {
+            var traffic_ban_time = $("#traffic_ban_time").val();
+
+            $.post("{{url('admin/setConfig')}}", {_token:'{{csrf_token()}}', name:'traffic_ban_time', value:traffic_ban_time}, function (ret) {
+                if (ret.status == 'success') {
+                    layer.msg(ret.message, {time:1000}, function() {
+                        window.location.reload();
+                    });
+                }
+            });
+        }
 
         // 设置最小积分
         $("#min_rand_score").change(function () {
@@ -795,7 +868,6 @@
                 }
             });
         }
-
 
         // 设置账号过期提醒阈值
         function setExpireDays() {

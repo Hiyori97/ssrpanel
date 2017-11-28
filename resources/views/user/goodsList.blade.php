@@ -13,25 +13,15 @@
 @section('title', '控制面板')
 @section('content')
     <!-- BEGIN CONTENT BODY -->
-    <div class="page-content">
-        <!-- BEGIN PAGE BREADCRUMB -->
-        <ul class="page-breadcrumb breadcrumb">
-            <li>
-                <a href="{{url('user/goodsList')}}">流量包</a>
-                <i class="fa fa-circle"></i>
-            </li>
-        </ul>
-        <!-- END PAGE BREADCRUMB -->
+    <div class="page-content" style="padding-top:0;">
         <!-- BEGIN PAGE BASE CONTENT -->
         <div class="row">
             <div class="col-md-12">
-                <!-- BEGIN PAGE BASE CONTENT -->
                 <!--
-                <div class="portlet light portlet-fit bordered">
+                <div class="portlet light bordered">
                     <div class="portlet-title">
                         <div class="caption">
-                            <i class="icon-share font-green"></i>
-                            <span class="caption-subject font-green bold uppercase"> 套餐 </span>
+                            <span class="caption-subject bold uppercase"> 流量套餐 </span>
                         </div>
                         <div class="actions"></div>
                     </div>
@@ -45,20 +35,14 @@
                                         </div>
                                         <div class="arrow-down border-top-blue"></div>
                                         <div class="price-table-pricing">
-                                            <h3><sup class="price-sign">￥</sup>30</h3>
+                                            <h3><sup class="price-sign">￥</sup>28</h3>
                                         </div>
                                         <div class="price-table-content">
                                             <div class="row mobile-padding">
                                                 <div class="col-xs-3 text-right mobile-padding">
-                                                    <i class="icon-user"></i>
-                                                </div>
-                                                <div class="col-xs-9 text-left mobile-padding">支持同时5个设备在线</div>
-                                            </div>
-                                            <div class="row mobile-padding">
-                                                <div class="col-xs-3 text-right mobile-padding">
                                                     <i class="icon-drawer"></i>
                                                 </div>
-                                                <div class="col-xs-9 text-left mobile-padding">50G流量/月</div>
+                                                <div class="col-xs-9 text-left mobile-padding">15G/月</div>
                                             </div>
                                             <div class="row mobile-padding">
                                                 <div class="col-xs-3 text-right mobile-padding">
@@ -92,20 +76,14 @@
                                         </div>
                                         <div class="arrow-down border-top-red"></div>
                                         <div class="price-table-pricing">
-                                            <h3><sup class="price-sign">￥</sup>80</h3>
+                                            <h3><sup class="price-sign">￥</sup>78</h3>
                                         </div>
                                         <div class="price-table-content">
                                             <div class="row mobile-padding">
                                                 <div class="col-xs-3 text-right mobile-padding">
-                                                    <i class="icon-user"></i>
-                                                </div>
-                                                <div class="col-xs-9 text-left mobile-padding">支持同时5个设备在线</div>
-                                            </div>
-                                            <div class="row mobile-padding">
-                                                <div class="col-xs-3 text-right mobile-padding">
                                                     <i class="icon-drawer"></i>
                                                 </div>
-                                                <div class="col-xs-9 text-left mobile-padding">80G流量/月</div>
+                                                <div class="col-xs-9 text-left mobile-padding">25G/月</div>
                                             </div>
                                             <div class="row mobile-padding">
                                                 <div class="col-xs-3 text-right mobile-padding">
@@ -139,21 +117,15 @@
                                         </div>
                                         <div class="arrow-down border-top-green"></div>
                                         <div class="price-table-pricing">
-                                            <h3><sup class="price-sign">￥</sup>150</h3>
+                                            <h3><sup class="price-sign">￥</sup>168</h3>
                                             <div class="price-ribbon">热门</div>
                                         </div>
                                         <div class="price-table-content">
                                             <div class="row mobile-padding">
                                                 <div class="col-xs-3 text-right mobile-padding">
-                                                    <i class="icon-user"></i>
-                                                </div>
-                                                <div class="col-xs-9 text-left mobile-padding">支持同时5个设备在线</div>
-                                            </div>
-                                            <div class="row mobile-padding">
-                                                <div class="col-xs-3 text-right mobile-padding">
                                                     <i class="icon-drawer"></i>
                                                 </div>
-                                                <div class="col-xs-9 text-left mobile-padding">100G流量/月</div>
+                                                <div class="col-xs-9 text-left mobile-padding">50G/月</div>
                                             </div>
                                             <div class="row mobile-padding">
                                                 <div class="col-xs-3 text-right mobile-padding">
@@ -187,20 +159,14 @@
                                         </div>
                                         <div class="arrow-down border-top-purple"></div>
                                         <div class="price-table-pricing">
-                                            <h3><sup class="price-sign">￥</sup>300</h3>
+                                            <h3><sup class="price-sign">￥</sup>320</h3>
                                         </div>
                                         <div class="price-table-content">
                                             <div class="row mobile-padding">
                                                 <div class="col-xs-3 text-right mobile-padding">
-                                                    <i class="icon-user"></i>
-                                                </div>
-                                                <div class="col-xs-9 text-left mobile-padding">支持同时5个设备在线</div>
-                                            </div>
-                                            <div class="row mobile-padding">
-                                                <div class="col-xs-3 text-right mobile-padding">
                                                     <i class="icon-drawer"></i>
                                                 </div>
-                                                <div class="col-xs-9 text-left mobile-padding">200G流量/月</div>
+                                                <div class="col-xs-9 text-left mobile-padding">50G/月</div>
                                             </div>
                                             <div class="row mobile-padding">
                                                 <div class="col-xs-3 text-right mobile-padding">
@@ -232,12 +198,10 @@
                     </div>
                 </div>
                 -->
-                <!-- BEGIN EXAMPLE TABLE PORTLET-->
                 <div class="portlet light bordered">
                     <div class="portlet-title">
                         <div class="caption font-dark">
-                            <i class="icon-basket font-dark"></i>
-                            <span class="caption-subject bold uppercase"> 流量时长包 </span>
+                            <span class="caption-subject bold uppercase"> 流量加油包 </span>
                         </div>
                     </div>
                     <div class="portlet-body">
@@ -245,11 +209,9 @@
                             <table class="table table-striped table-bordered table-hover table-checkable order-column">
                                 <thead>
                                 <tr>
-                                    <th> ID </th>
-                                    <th> 名称 </th>
-                                    <th> 类型 </th>
-                                    <th> 内含流量 </th>
-                                    <th> 售价 </th>
+                                    <th style="text-align: center;"> 名称 </th>
+                                    <th style="text-align: center;"> 内含流量 </th>
+                                    <th style="text-align: center;"> 售价 </th>
                                     <!--<th> 所需积分 </th>-->
                                     <th> </th>
                                 </tr>
@@ -262,16 +224,14 @@
                                 @else
                                     @foreach($goodsList as $key => $goods)
                                         <tr class="odd gradeX">
-                                            <td> {{$key + 1}} </td>
-                                            <td>
-                                                @if($goods->logo) <a href="{{$goods->logo}}" class="fancybox"><img src="{{$goods->logo}}"/></a> @endif
+                                            <td style="text-align: center;">
+                                                <!--@if($goods->logo) <a href="{{$goods->logo}}" class="fancybox"><img src="{{$goods->logo}}"/></a> @endif -->
                                                 {{$goods->name}}
                                             </td>
-                                            <td> {{$goods->type == 1 ? '流量包' : '套餐'}} </td>
-                                            <td> {{$goods->traffic}} MiB </td>
-                                            <td> ￥{{$goods->price}} </td>
+                                            <td style="text-align: center;"> {{$goods->traffic}} MiB </td>
+                                            <td style="text-align: center;"> ￥{{$goods->price}} </td>
                                             <!--<td> {{$goods->score}} </td>-->
-                                            <td>
+                                            <td style="text-align: center;">
                                                 <button type="button" class="btn btn-sm red btn-outline" onclick="buy('{{$goods->id}}')">购买</button>
                                                 <!--<button type="button" class="btn btn-sm blue btn-outline" onclick="exchange('{{$goods->id}}')">兑换</button>-->
                                             </td>
@@ -293,7 +253,6 @@
                         </div>
                     </div>
                 </div>
-                <!-- END EXAMPLE TABLE PORTLET-->
             </div>
         </div>
         <!-- END PAGE BASE CONTENT -->
@@ -302,7 +261,6 @@
 @endsection
 @section('script')
     <script src="/assets/global/plugins/fancybox/source/jquery.fancybox.js" type="text/javascript"></script>
-    <script src="/assets/global/plugins/bootbox/bootbox.min.js" type="text/javascript"></script>
 
     <script type="text/javascript">
         function buy(goods_id) {

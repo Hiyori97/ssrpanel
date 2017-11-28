@@ -34,13 +34,16 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach ($nodeList as $node)
+                                    @foreach($nodeList as $node)
                                         <tr>
-                                            <td> {{$node->name}} @if ($node->compatible) <span class="label label-warning"> 兼容 </span> @endif </td>
+                                            <td>
+                                                {{$node->name}}
+                                                @if($node->compatible) <span class="label label-info">兼</span> @endif
+                                                @if($node->single) <span class="label label-danger">单</span> @endif
+                                            </td>
                                             <td>
                                                 <a class="btn btn-sm green btn-outline" data-toggle="modal" href="#txt_{{$node->id}}"> 文本 </a>
                                                 <a class="btn btn-sm green btn-outline" data-toggle="modal" href="#scheme_{{$node->id}}"> SCHEME </a>
-                                                <a class="btn btn-sm green btn-outline" data-toggle="modal" href="#json_{{$node->id}}"> JSON </a>
                                                 <a class="btn btn-sm green btn-outline" data-toggle="modal" href="#qrcode_{{$node->id}}"> 二维码 </a>
                                             </td>
                                         </tr>
@@ -91,19 +94,6 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="modal fade draggable-modal" id="json_{{$node->id}}" tabindex="-1" role="basic" aria-hidden="true">
-                                <div class="modal-dialog">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
-                                            <h4 class="modal-title">请复制以下信息，添加至gui-config.json</h4>
-                                        </div>
-                                        <div class="modal-body">
-                                            <textarea class="form-control" rows="16" readonly="readonly"> {{$node->json}} </textarea>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
                             <div class="modal fade" id="qrcode_{{$node->id}}" tabindex="-1" role="dialog" aria-hidden="true">
                                 <div class="modal-dialog @if(!$node->compatible) modal-sm @endif">
                                     <div class="modal-content">
@@ -146,7 +136,6 @@
 @section('script')
     <script src="/assets/global/plugins/jquery-qrcode/jquery.qrcode.min.js" type="text/javascript"></script>
     <script src="/assets/global/plugins/jquery-ui/jquery-ui.min.js" type="text/javascript"></script>
-    <script src="/assets/global/plugins/bootbox/bootbox.min.js" type="text/javascript"></script>
 
     <script type="text/javascript">
         var UIModals = function () {
@@ -154,7 +143,6 @@
                 @foreach($nodeList as $node)
                     $("#txt_{{$node->id}}").draggable({handle: ".modal-header"});
                     $("#scheme_{{$node->id}}").draggable({handle: ".modal-header"});
-                    $("#json_{{$node->id}}").draggable({handle: ".modal-header"});
                     $("#qrcode_{{$node->id}}").draggable({handle: ".modal-header"});
                 @endforeach
             };

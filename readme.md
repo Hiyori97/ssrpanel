@@ -7,7 +7,7 @@ MYSQL 5.5 （推荐5.6+）
 磁盘空间 10G+
 KVM
 
-PHP必须开启gd2、fileinfo组件
+PHP必须开启gd、fileinfo组件
 
 小白建议使用LNMP傻瓜安装出php7.1 + mysql(5.5以上)
 手动编译请看WIKI [编译安装PHP7.1.7环境（CentOS）]
@@ -15,23 +15,30 @@ PHP必须开启gd2、fileinfo组件
 
 telegram频道：https://t.me/ssrpanel
 telegram群组：https://t.me/chatssrpanel
-开发测试演示：http://www.ssrpanel.com
-用户名：admin 密码：123456
-(请大家勿改admin的密码)
+本人未实名微信小号：dxstx77 （请勿任何转账、红包行为）
+严禁在TG群里喧哗，只聊VPS、技术不扯淡，更别刷屏惹众怒，否则踢3天，两次机会，第三次被踢你永远进不来，我都记得谁谁谁
+````
+
+## 演示站(已挂，求打赏)
+````
+http://www.ssrpanel.com
+用户名：admin
+密码：123456
 ````
 
 ![VPS推荐](https://github.com/ssrpanel/ssrpanel/wiki/VPS%E6%8E%A8%E8%8D%90)
 ````
-部署面板必须得用到VPS，也就是服务器
-强烈推荐使用1G以上内存的KVM架构的服务器
+部署面板必须得用到VPS
+强烈推荐使用1G以上内存的KVM架构的VPS
+做节点则只需要512M+内存的KVM即可
+（节点强烈不建议使用OVZ，一无法加速二容易崩溃，512M以下内存的容易经常性宕机，即便是KVM）
 ````
 
 #### 打赏作者
 ````
-如果你觉得这套代码好用，可以请我吃一个巨无霸汉堡，微信扫一下
-我不以此谋生，所以你在使用过程中有发现问题就提issue，有空我会改的
-别搞的我像是欠你钱似的，一个免费的开源的东西，你想要什么功能会的话自己加，不然就别哔哔
-持续开发，喜欢请star一下
+如果你觉得这套代码好用，微信扫一下进行打赏
+在使用过程中有发现问题就提issue，有空我会改的
+持续开发，喜欢请star一下，如果你发现什么好玩的东西，也请发到issue
 ````
 ![打赏作者](https://github.com/ssrpanel/ssrpanel/blob/master/public/assets/images/donate.jpeg?raw=true)
 
@@ -49,16 +56,24 @@ telegram群组：https://t.me/chatssrpanel
 |Royal|￥25|
 |bingo|￥8|
 |Eason|￥10|
-|【要求匿名】|￥60|
+|【要求匿名】|￥150|
+|暮风|￥20|
+|huigeer|￥10|
+|真想悠哉|￥88|
+|osmond|￥10|
+|风云_1688|￥20|
+|穆飞|￥10|
+|文青|￥10|
+|Sherl|￥48|
+|小孑、|￥20|
+|曾健|￥10|
 
-截止目前收到的捐赠：￥492，实际到账：￥487.08 （提款手续费4.92）
 
 这些捐赠的用途：
-- 1.30刀买了1台VPS做开发测试用（后被干扰到几乎无法SSH）
+- 1.30刀买了1台VPS做开发测试用（已被BAN）
 - 2.30刀买了一个Beyond Compare 4 Standard的正版激活码
-- 3.感谢`Jyo`提供一个台Azure给我开发测试用，需要代购VPS找在tg群里找他
-- 4.感谢`izhangxm`提交了自定义等级的分支代码
-- 5.感谢`Hao-Luo`提供的节点一键部署脚本
+- 3.感谢`izhangxm`提交了自定义等级的分支代码
+- 4.感谢`Hao-Luo`提供的节点一键部署脚本
 
 
 #### 拉取代码
@@ -111,7 +126,7 @@ service nginx restart
 service php-fpm restart
 ````
 
-## 定时任务（所有自动发邮件的地方都要用到，所以请务必配置）
+## 定时任务（发邮件、流量统计、自动任务全部需要用到）
 ````
 编辑crontab
 crontab -e
@@ -154,10 +169,15 @@ wget -N --no-check-certificate https://raw.githubusercontent.com/ssrpanel/ssrpan
 
 ## 更新代码
 ````
+进到ssrpanel目录下执行：
+git pull
+
+如果每次更新都会出现数据库文件被覆盖，请先执行一次：
+chmod a+x fix_git.sh && sh fix_git.sh
+
+如果本地自行改了文件，想用回原版代码，请先备份好 config/database.php，然后执行以下命令：
 chmod a+x update.sh && sh update.sh
 
-如果每次更新都会出现数据库文件被覆盖
-请先执行一次 chmod a+x fix_git.sh && sh fix_git.sh
 ````
 
 ## 网卡流量监控一键脚本
@@ -165,30 +185,98 @@ chmod a+x update.sh && sh update.sh
 wget -N --no-check-certificate https://raw.githubusercontent.com/ssrpanel/ssrpanel/master/server/deploy_vnstat.sh;chmod +x deploy_vnstat.sh;./deploy_vnstat.sh
 ````
 
+## 单端口多用户（推荐）
+````
+编辑节点的 user-config.json 文件：
+vim user-config.json
+
+将 "additional_ports" : {}, 改为以下内容：
+"additional_ports" : {
+    "80": {
+        "passwd": "统一认证密码", // 例如 SSRP4ne1，推荐不要出现除大小写字母数字以外的任何字符
+        "method": "统一认证加密方式", // 例如 aes-128-ctr
+        "protocol": "统一认证协议", // 例如 auth_aes128_md5 或者 auth_aes128_sha1，目前只有这两种
+        "protocol_param": "#",
+        "obfs": "tls1.2_ticket_auth_compatible",
+        "obfs_param": ""
+    },
+    "443": {
+        "passwd": "统一认证密码",
+        "method": "统一认证加密方式",
+        "protocol": "统一认证协议",
+        "protocol_param": "#",
+        "obfs": "tls1.2_ticket_auth_compatible",
+        "obfs_param": ""
+    }
+},
+
+保存，然后重启SSR服务。
+客户端设置：
+
+远程端口：80
+密码：password
+加密方式：aes-128-ctr
+协议：auth_aes128_md5
+混淆插件：tls1.2_ticket_auth
+协议参数：1026:@123 (SSR端口:SSR密码)
+
+或
+
+远程端口：443
+密码：password
+加密方式：aes-128-ctr
+协议：auth_aes128_sha1
+混淆插件：tls1.2_ticket_auth
+协议参数：1026:SSRP4ne1 (SSR端口:SSR密码)
+
+经实测账号的协议可以是：auth_chain_a，建议节点后端使用auth_sha1_v4_compatible，方便兼容
+
+注意：如果想强制所有账号都走80、443这样自定义的端口的话，记得把 user-config.json 中的 additional_ports_only 设置为 true
+警告：经实测单端口下如果用锐速没有效果，很可能是VPS供应商限制了这两个端口
+提示：配置单端口最好先看下这个WIKI，防止才踩坑：https://github.com/ssrpanel/ssrpanel/wiki/%E5%8D%95%E7%AB%AF%E5%8F%A3%E5%A4%9A%E7%94%A8%E6%88%B7%E7%9A%84%E5%9D%91
+
+````
+
+## 致敬
+````
+@breakwa11
+@glzjin
+@orvice
+@ToyoDAdoubi
+@91yun
+````
 
 ## 说明
 ````
 1.多节点账号管理面板
 2.需配合SSR 3.4 Python版后端使用
 3.强大的管理后台、美观的界面、简单易用的开关、支持移动端自适应
-4.内含简单的购物、优惠券、流量兑换、邀请码、推广返利&提现、文章管理、工单等系统
-5.节点可以分组，不同级别的用户可以看到不同级别分组的节点
-6.SS配置转SSR配置，方便使用SS后端一键把账号转入到系统
+4.内含简单的购物、优惠券、流量兑换、邀请码、推广返利&提现、文章管理、工单等模块
+5.节点支持分组，不同级别的用户可以看到不同级别分组的节点
+6.SS配置转SSR配置，轻松一键导入SS账号
 7.流量日志、单机单节点日志分析功能，知道用户最近都看了哪些网站
-7.定时任务、所有邮件投递都有记录，账号临近到期、流量不够都会自动发邮件提醒，自动禁用到期账号
-8.后台一键添加加密方式、混淆、协议
-9.强大的后台配置功能
-10.屏蔽常见爬虫
-11.更多功能和开发排期请看WIKI
+8.强大的定时任务
+9.所有邮件投递都有记录
+10.账号临近到期、流量不够都会自动发邮件提醒，自动禁用到期、流量异常的账号
+11.后台一键添加加密方式、混淆、协议、等级
+12.强大的后台一键配置功能
+13.屏蔽常见爬虫
+14.支持单端口多用户
+15.账号、节点24小时和近30天内的流量监控
+16.支持节点订阅功能，可一键封禁账号订阅地址
+17.引入serverStatus，可以在线实时查看节点的实时流量信息
 ````
 
-![Markdown](http://i4.bvimg.com/1949/aac73bf589fbd785.png)
-![Markdown](http://i4.bvimg.com/1949/a7c21b7504805130.png)
-![Markdown](http://i4.bvimg.com/1949/ee4e72cab0deb8b0.png)
-![Markdown](http://i4.bvimg.com/1949/ee21b577359a638a.png)
-![Markdown](http://i1.ciimg.com/1949/6741b88c5a02d550.png)
-![Markdown](http://i1.ciimg.com/1949/a12612d57fdaa001.png)
-![Markdown](http://i1.ciimg.com/1949/c5c80818393d585e.png)
-![Markdown](http://i1.ciimg.com/1949/c52861d84ed70039.png)
-![Markdown](http://i1.ciimg.com/1949/83354a1cd7fbd041.png)
-![Markdown](http://i1.bvimg.com/1949/13b6e4713a6d29c2.png)
+## 预览
+![Wpy0e.png](https://s1.ax1x.com/2017/11/24/Wpy0e.png)
+![WpUYR.png](https://s1.ax1x.com/2017/11/24/WpUYR.png)
+![WpNk9.png](https://s1.ax1x.com/2017/11/24/WpNk9.png)
+![WpGmF.png](https://s1.ax1x.com/2017/11/24/WpGmF.png)
+![WpJw4.png](https://s1.ax1x.com/2017/11/24/WpJw4.png)
+![WpYTJ.png](https://s1.ax1x.com/2017/11/24/WpYTJ.png)
+![Wpaf1.png](https://s1.ax1x.com/2017/11/24/Wpaf1.png)
+![WpwSx.png](https://s1.ax1x.com/2017/11/24/WpwSx.png)
+![Wp0l6.png](https://s1.ax1x.com/2017/11/24/Wp0l6.png)
+![WpB6K.png](https://s1.ax1x.com/2017/11/24/WpB6K.png)
+![WpDOO.png](https://s1.ax1x.com/2017/11/24/WpDOO.png)
+![WpsmD.png](https://s1.ax1x.com/2017/11/24/WpsmD.png)

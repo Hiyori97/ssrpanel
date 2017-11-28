@@ -27,7 +27,9 @@ CREATE TABLE `ss_node` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(128) NOT NULL DEFAULT '' COMMENT '名称',
   `group_id` int(11) NOT NULL DEFAULT '0' COMMENT '所属分组',
+  `country_code` char(5) DEFAULT '' COMMENT '国家代码',
   `server` varchar(128) NOT NULL DEFAULT '' COMMENT '服务器地址',
+  `desc` varchar(255) DEFAULT '' COMMENT '节点简单描述',
   `method` varchar(32) NOT NULL DEFAULT 'aes-192-ctr' COMMENT '加密方式',
   `custom_method` varchar(30) NOT NULL DEFAULT 'aes-192-ctr' COMMENT '自定义加密方式',
   `protocol` varchar(128) NOT NULL DEFAULT 'auth_chain_a' COMMENT '协议',
@@ -39,6 +41,12 @@ CREATE TABLE `ss_node` (
   `traffic` bigint(20) NOT NULL DEFAULT '1000' COMMENT '每月可用流量，单位G',
   `monitor_url` varchar(255) DEFAULT NULL COMMENT '监控地址',
   `compatible` tinyint(4) DEFAULT '0' COMMENT '兼容SS',
+  `single` tinyint(4) DEFAULT '0' COMMENT '单端口多用户：0-否、1-是',
+  `single_force` tinyint(4) DEFAULT NULL COMMENT '模式：0-兼容模式、1-严格模式',
+  `single_port` varchar(50) DEFAULT '' COMMENT '端口号，用,号分隔',
+  `single_passwd` varchar(50) DEFAULT '' COMMENT '密码',
+  `single_method` varchar(50) DEFAULT '' COMMENT '加密方式',
+  `single_protocol` varchar(50) NOT NULL DEFAULT '' COMMENT '协议',
   `sort` int(3) NOT NULL DEFAULT '0' COMMENT '排序值，值越大越靠前显示',
   `status` tinyint(4) NOT NULL DEFAULT '1' COMMENT '状态：0-维护、1-正常',
   `created_at` datetime NOT NULL,
@@ -72,7 +80,8 @@ CREATE TABLE `ss_node_online_log` (
   `log_time` int(11) NOT NULL COMMENT '记录时间',
   `created_at` datetime NOT NULL,
   `updated_at` datetime NOT NULL,
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  KEY `idx_online` (`node_id`,`log_time`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='节点在线信息';
 
 
@@ -107,6 +116,7 @@ CREATE TABLE `user` (
   `score` int(11) NOT NULL DEFAULT '0' COMMENT '积分',
   `enable_time` date DEFAULT NULL COMMENT '开通日期',
   `expire_time` date NOT NULL DEFAULT '2099-01-01' COMMENT '过期时间',
+  `ban_time` int(11) NOT NULL DEFAULT '0' COMMENT '封禁到期时间',
   `remark` text COMMENT '备注',
   `level` tinyint(4) NOT NULL DEFAULT '1' COMMENT '等级：可定义名称',
   `is_admin` tinyint(4) NOT NULL DEFAULT '0' COMMENT '是否管理员：0-否、1-是',
@@ -271,6 +281,9 @@ INSERT INTO `config` VALUES ('29', 'subscribe_max', 3);
 INSERT INTO `config` VALUES ('30', 'min_port', 10000);
 INSERT INTO `config` VALUES ('31', 'max_port', 40000);
 INSERT INTO `config` VALUES ('32', 'is_captcha', 0);
+INSERT INTO `config` VALUES ('33', 'is_traffic_ban', 1);
+INSERT INTO `config` VALUES ('34', 'traffic_ban_value', 10);
+INSERT INTO `config` VALUES ('35', 'traffic_ban_time', 60);
 
 
 -- ----------------------------
@@ -281,10 +294,11 @@ CREATE TABLE `article` (
   `title` varchar(100) NOT NULL DEFAULT '' COMMENT '标题',
   `author` varchar(255) DEFAULT '' COMMENT '作者',
   `content` text COMMENT '内容',
+  `type` tinyint(4) DEFAULT '1' COMMENT '类型：1-文章、2-公告',
   `is_del` tinyint(4) NOT NULL DEFAULT '0' COMMENT '是否删除',
   `sort` int(11) NOT NULL DEFAULT '0' COMMENT '排序',
-  `created_at` datetime DEFAULT NULL,
-  `updated_at` datetime DEFAULT NULL,
+  `created_at` datetime DEFAULT NULL COMMENT '创建时间',
+  `updated_at` datetime DEFAULT NULL COMMENT '最后更新时间',
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4;
 
@@ -341,7 +355,7 @@ CREATE TABLE `verify` (
   `token` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '校验token',
   `status` tinyint(4) NOT NULL DEFAULT '0' COMMENT '状态：0-未使用、1-已使用、2-已失效',
   `created_at` datetime DEFAULT NULL COMMENT '创建时间',
-  `updated_at` datetime DEFAULT NULL COMMENT '最后一次更新时间',
+  `updated_at` datetime DEFAULT NULL COMMENT '最后更新时间',
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -386,7 +400,7 @@ CREATE TABLE `goods` (
   `is_del` tinyint(4) NOT NULL DEFAULT '0' COMMENT '是否已删除：0-否、1-是',
   `status` tinyint(4) NOT NULL DEFAULT '1' COMMENT '状态：0-下架、1-上架',
   `created_at` datetime DEFAULT NULL COMMENT '创建时间',
-  `updated_at` datetime DEFAULT NULL COMMENT '最后一次更新时间',
+  `updated_at` datetime DEFAULT NULL COMMENT '最后更新时间',
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='商品信息表';
 
@@ -409,7 +423,7 @@ CREATE TABLE `coupon` (
   `is_del` tinyint(4) NOT NULL DEFAULT '0' COMMENT '是否已删除：0-未删除、1-已删除',
   `status` tinyint(4) NOT NULL DEFAULT '1' COMMENT '状态：0-未使用、1-已使用、2-已失效',
   `created_at` datetime DEFAULT NULL COMMENT '创建时间',
-  `updated_at` datetime DEFAULT NULL COMMENT '最后一次更新时间',
+  `updated_at` datetime DEFAULT NULL COMMENT '最后更新时间',
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='优惠券';
 
@@ -423,7 +437,7 @@ CREATE TABLE `coupon_log` (
   `goods_id` int(11) NOT NULL COMMENT '商品ID',
   `order_id` int(11) NOT NULL COMMENT '订单ID',
   `created_at` datetime DEFAULT NULL COMMENT '创建时间',
-  `updated_at` datetime DEFAULT NULL COMMENT '最后一次更新时间',
+  `updated_at` datetime DEFAULT NULL COMMENT '最后更新时间',
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='优惠券使用日志';
 
@@ -440,7 +454,7 @@ CREATE TABLE `order` (
   `totalPrice` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '订单总价',
   `status` tinyint(4) NOT NULL DEFAULT '0' COMMENT '订单状态：-1-已关闭、0-待支付、1-已支付待确认、2-已完成',
   `created_at` datetime DEFAULT NULL COMMENT '创建时间',
-  `updated_at` datetime DEFAULT NULL COMMENT '最后一次更新时间',
+  `updated_at` datetime DEFAULT NULL COMMENT '最后更新时间',
   PRIMARY KEY (`oid`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='订单信息表';
 
@@ -459,7 +473,7 @@ CREATE TABLE `order_goods` (
   `price` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '商品实际价格',
   `is_expire` tinyint(4) NOT NULL DEFAULT '0' COMMENT '是否已过期：0-未过期、1-已过期',
   `created_at` datetime DEFAULT NULL COMMENT '创建时间',
-  `updated_at` datetime DEFAULT NULL COMMENT '最后一次更新时间',
+  `updated_at` datetime DEFAULT NULL COMMENT '最后更新时间',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
@@ -535,7 +549,7 @@ CREATE TABLE `referral_apply` (
   `link_logs` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '关联返利日志ID，例如：1,3,4',
   `status` tinyint(4) NOT NULL DEFAULT '0' COMMENT '状态：-1-驳回、0-待审核、1-审核通过待打款、2-已打款',
   `created_at` datetime DEFAULT NULL COMMENT '创建时间',
-  `updated_at` datetime DEFAULT NULL COMMENT '最后一次更新时间',
+  `updated_at` datetime DEFAULT NULL COMMENT '最后更新时间',
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='提现申请';
 
@@ -612,7 +626,7 @@ CREATE TABLE `user_traffic_daily` (
   `total` bigint(20) NOT NULL DEFAULT '0' COMMENT '总流量',
   `traffic` varchar(255) DEFAULT '' COMMENT '总流量（带单位）',
   `created_at` datetime DEFAULT NULL COMMENT '创建时间',
-  `updated_at` datetime DEFAULT NULL COMMENT '最后一起更新时间',
+  `updated_at` datetime DEFAULT NULL COMMENT '最后更新时间',
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4;
 
@@ -629,9 +643,115 @@ CREATE TABLE `user_traffic_hourly` (
   `total` bigint(20) NOT NULL DEFAULT '0' COMMENT '总流量',
   `traffic` varchar(255) DEFAULT '' COMMENT '总流量（带单位）',
   `created_at` datetime DEFAULT NULL COMMENT '创建时间',
-  `updated_at` datetime DEFAULT NULL COMMENT '最后一起更新时间',
+  `updated_at` datetime DEFAULT NULL COMMENT '最后更新时间',
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4;
+
+
+-- ----------------------------
+-- Table structure for `node_traffic_daily`
+-- ----------------------------
+CREATE TABLE `ss_node_traffic_daily` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `node_id` int(11) NOT NULL DEFAULT '0' COMMENT '节点ID',
+  `u` bigint(20) NOT NULL DEFAULT '0' COMMENT '上传流量',
+  `d` bigint(20) NOT NULL DEFAULT '0' COMMENT '下载流量',
+  `total` bigint(20) NOT NULL DEFAULT '0' COMMENT '总流量',
+  `traffic` varchar(255) DEFAULT '' COMMENT '总流量（带单位）',
+  `created_at` datetime DEFAULT NULL COMMENT '创建时间',
+  `updated_at` datetime DEFAULT NULL COMMENT '最后更新时间',
+  PRIMARY KEY (`id`),
+  KEY `idx_node_id` (`node_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4;
+
+
+-- ----------------------------
+-- Table structure for `node_traffic_hourly`
+-- ----------------------------
+CREATE TABLE `ss_node_traffic_hourly` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `node_id` int(11) NOT NULL DEFAULT '0' COMMENT '节点ID',
+  `u` bigint(20) NOT NULL DEFAULT '0' COMMENT '上传流量',
+  `d` bigint(20) NOT NULL DEFAULT '0' COMMENT '下载流量',
+  `total` bigint(20) NOT NULL DEFAULT '0' COMMENT '总流量',
+  `traffic` varchar(255) DEFAULT '' COMMENT '总流量（带单位）',
+  `created_at` datetime DEFAULT NULL COMMENT '创建时间',
+  `updated_at` datetime DEFAULT NULL COMMENT '最后一起更新时间',
+  PRIMARY KEY (`id`),
+  KEY `idx_node_id` (`node_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4;
+
+
+-- ----------------------------
+-- Table structure for `user_ban_log`
+-- ----------------------------
+CREATE TABLE `user_ban_log` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) NOT NULL DEFAULT '0' COMMENT '用户ID',
+  `minutes` int(11) NOT NULL DEFAULT '0' COMMENT '封禁账号市场，单位分钟',
+  `desc` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '操作描述',
+  `status` tinyint(4) NOT NULL DEFAULT '0' COMMENT '状态：0-未处理、1-已处理',
+  `created_at` datetime DEFAULT NULL COMMENT ' 创建时间',
+  `updated_at` datetime DEFAULT NULL COMMENT '最后更新时间',
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='用户封禁日志';
+
+
+-- ----------------------------
+-- Table structure for `country`
+-- ----------------------------
+CREATE TABLE `country` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `country_name` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '名称',
+  `country_code` varchar(10) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '代码',
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- ----------------------------
+-- Records of country
+-- ----------------------------
+INSERT INTO `country` VALUES ('1', '澳大利亚', 'au');
+INSERT INTO `country` VALUES ('2', '巴西', 'br');
+INSERT INTO `country` VALUES ('3', '加拿大', 'ca');
+INSERT INTO `country` VALUES ('4', '瑞士', 'ch');
+INSERT INTO `country` VALUES ('5', '中国', 'cn');
+INSERT INTO `country` VALUES ('6', '德国', 'de');
+INSERT INTO `country` VALUES ('7', '丹麦', 'dk');
+INSERT INTO `country` VALUES ('8', '埃及', 'eg');
+INSERT INTO `country` VALUES ('9', '法国', 'fr');
+INSERT INTO `country` VALUES ('10', '希腊', 'gr');
+INSERT INTO `country` VALUES ('11', '香港', 'hk');
+INSERT INTO `country` VALUES ('12', '印度尼西亚', 'id');
+INSERT INTO `country` VALUES ('13', '爱尔兰', 'ie');
+INSERT INTO `country` VALUES ('14', '以色列', 'il');
+INSERT INTO `country` VALUES ('15', '印度', 'in');
+INSERT INTO `country` VALUES ('16', '伊拉克', 'iq');
+INSERT INTO `country` VALUES ('17', '伊朗', 'ir');
+INSERT INTO `country` VALUES ('18', '意大利', 'it');
+INSERT INTO `country` VALUES ('19', '日本', 'jp');
+INSERT INTO `country` VALUES ('20', '韩国', 'kr');
+INSERT INTO `country` VALUES ('21', '墨西哥', 'mx');
+INSERT INTO `country` VALUES ('22', '马来西亚', 'my');
+INSERT INTO `country` VALUES ('23', '荷兰', 'nl');
+INSERT INTO `country` VALUES ('24', '挪威', 'no');
+INSERT INTO `country` VALUES ('25', '纽西兰', 'nz');
+INSERT INTO `country` VALUES ('26', '菲律宾', 'ph');
+INSERT INTO `country` VALUES ('27', '俄罗斯', 'ru');
+INSERT INTO `country` VALUES ('28', '瑞典', 'se');
+INSERT INTO `country` VALUES ('29', '新加坡', 'sg');
+INSERT INTO `country` VALUES ('30', '泰国', 'th');
+INSERT INTO `country` VALUES ('31', '土耳其', 'tr');
+INSERT INTO `country` VALUES ('32', '台湾', 'tw');
+INSERT INTO `country` VALUES ('33', '英国', 'uk');
+INSERT INTO `country` VALUES ('34', '美国', 'us');
+INSERT INTO `country` VALUES ('35', '越南', 'vn');
+INSERT INTO `country` VALUES ('36', '波兰', 'pl');
+INSERT INTO `country` VALUES ('37', '哈萨克斯坦', 'kz');
+INSERT INTO `country` VALUES ('38', '乌克兰', 'ua');
+INSERT INTO `country` VALUES ('39', '罗马尼亚', 'ro');
+INSERT INTO `country` VALUES ('40', '阿拉伯联合酋长国', 'ae');
+
+
 
 
 

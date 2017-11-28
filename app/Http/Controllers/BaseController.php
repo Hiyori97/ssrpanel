@@ -16,11 +16,11 @@ use App\Http\Models\User;
 class BaseController extends Controller
 {
     // 生成SS密码
-    public function makeRandStr($length = 4)
+    public function makeRandStr($length = 6)
     {
         // 密码字符集，可任意添加你需要的字符
-        $chars = 'abcdefghijkmnpqrstuvwxyz23456789';
-        $char = '@';
+        $chars = 'abcdefghijkmnpqrstuvwxyzABCDEFGHJKMNPQRSTUVWXYZ23456789';
+        $char = '';
         for ($i = 0; $i < $length; $i++) {
             $char .= $chars[mt_rand(0, strlen($chars) - 1)];
         }
@@ -123,7 +123,7 @@ class BaseController extends Controller
         $config = $this->systemConfig();
 
         $port = mt_rand($config['min_port'], $config['max_port']);
-        $deny_port = [1068, 1109, 1434, 3127, 3128, 3129, 3130, 3332, 4444, 5554, 6669, 8080, 8081, 8082, 8181, 8282, 9996, 17185, 24554, 28281, 60177, 60179]; // 不生成的端口
+        $deny_port = [1068, 1109, 1434, 3127, 3128, 3129, 3130, 3332, 4444, 5554, 6669, 8080, 8081, 8082, 8181, 8282, 9996, 17185, 24554, 35601, 60177, 60179]; // 不生成的端口
 
         $exists_port = User::query()->pluck('port')->toArray();
         if (in_array($port, $exists_port) || in_array($port, $deny_port)) {
@@ -136,6 +136,11 @@ class BaseController extends Controller
     // 类似Linux中的tail命令
     public function tail($file, $n, $base = 5)
     {
+        $fileLines = $this->countLine($file);
+        if ($fileLines < 15000) {
+            return false;
+        }
+
         $fp = fopen($file, "r+");
         assert($n > 0);
         $pos = $n + 1;
@@ -158,6 +163,27 @@ class BaseController extends Controller
     }
 
     /**
+     * 计算文件行数
+     */
+    function countLine($file)
+    {
+        $fp = fopen($file, "r");
+        $i = 0;
+        while (!feof($fp)) {
+            //每次读取2M
+            if ($data = fread($fp, 1024 * 1024 * 2)) {
+                //计算读取到的行数
+                $num = substr_count($data, "\n");
+                $i += $num;
+            }
+        }
+
+        fclose($fp);
+
+        return $i;
+    }
+
+    /**
      * 文件大小转换
      *
      * @param int $bytes
@@ -176,13 +202,12 @@ class BaseController extends Controller
         return round($bytes, $precision) . ' ' . $units[$pow];
     }
 
-    // 浏览器类型
-    public function browsers($tag)
+    // 禁止注册的邮箱后缀
+    public function forbidDomain()
     {
-        $data = [
-            'MicroMessenger' => '微信',
-            'iPhone' => 'iPhone',
-            'Linux' => '安卓'
+        return [
+            'gov.cn',
+            'edu.cn'
         ];
     }
 

@@ -61,6 +61,7 @@
                     <li class="dropdown dropdown-user dropdown-dark">
                         <a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
                             <span class="username username-hide-on-mobile"> {{Session::get('user')['username']}} </span>
+                            <!-- DOC: Do not remove below empty space(&nbsp;) as its purposely used -->
                             <img alt="" class="img-circle" src="/assets/images/avatar.jpg" /> </a>
                         <ul class="dropdown-menu dropdown-menu-default">
                             <li>
@@ -183,7 +184,7 @@
                         <li class="nav-item {{Request::getRequestUri() == '/admin/groupList' ? 'active open' : ''}}">
                             <a href="{{url('admin/groupList')}}" class="nav-link ">
                                 <i class="icon-grid"></i>
-                                <span class="title">节点分组列表</span>
+                                <span class="title">节点分组</span>
                             </a>
                         </li>
                     </ul>
