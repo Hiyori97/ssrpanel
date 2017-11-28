@@ -57,7 +57,7 @@
         @endif
         <div class="form-group">
             <label class="control-label visible-ie8 visible-ie9">用户名</label>
-            <input class="form-control form-control-solid placeholder-no-fix" type="text" autocomplete="off" placeholder="用户名" name="username" value="{{Request::old('username')}}" />
+            <input class="form-control form-control-solid placeholder-no-fix" type="text" autocomplete="off" placeholder="邮箱" name="username" value="{{Request::old('username')}}" />
         </div>
         <div class="form-group">
             <label class="control-label visible-ie8 visible-ie9">密码</label>
