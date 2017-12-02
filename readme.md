@@ -56,7 +56,7 @@ http://www.ssrpanel.com
 |Royal|￥25|
 |bingo|￥8|
 |Eason|￥10|
-|【要求匿名】|￥150|
+|【要求匿名】|￥270|
 |暮风|￥20|
 |huigeer|￥10|
 |真想悠哉|￥88|
@@ -67,6 +67,7 @@ http://www.ssrpanel.com
 |Sherl|￥48|
 |小孑、|￥20|
 |曾健|￥10|
+|Lojbk|￥10|
 
 
 这些捐赠的用途：
@@ -135,9 +136,36 @@ crontab -e
 * * * * * php /home/wwwroot/ssrpanel/artisan schedule:run >> /dev/null 2>&1
 ````
 
-#### 发送邮件配置
+## 邮件配置
+###### SMTP
 ````
-config\mail.php 修改其中的配置
+编辑 config\mail.php
+
+请自行配置如下内容
+'driver' => 'smtp',
+'host' => 'smtp.exmail.qq.com',
+'port' => 465,
+'from' => [
+    'address' => 'xxx@qq.com',
+    'name' => 'SSRPanel',
+],
+'encryption' => 'ssl',
+'username' => 'xxx@qq.com',
+'password' => 'xxxxxx',
+````
+
+###### Mailgun
+````
+编辑 config\mail.php
+将 driver 值改为 mailgun
+
+编辑 config/services.php
+
+请自行配置如下内容
+'mailgun' => [
+    'domain' => 'mailgun发件域名',
+    'secret' => 'mailgun上申请到的secret',
+],
 ````
 
 ## 日志分析（目前仅支持单机单节点）
@@ -237,6 +265,18 @@ vim user-config.json
 
 ````
 
+## 校时
+````
+如果架构是“一面板机-一数据库机-多节点机”，请务必保持各个服务器之间的时间一致，否则会影响节点在线数的准确性和单端口多用户功能的正常使用。
+推荐统一使用CST并安装校时服务：
+vim /etc/sysconfig/clock 把值改为 Asia/Shanghai
+cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
+
+重启一下服务器，然后：
+yum install ntp
+ntpdate cn.pool.ntp.org
+````
+
 ## 致敬
 ````
 @breakwa11
@@ -244,6 +284,7 @@ vim user-config.json
 @orvice
 @ToyoDAdoubi
 @91yun
+@Akkariiin
 ````
 
 ## 说明

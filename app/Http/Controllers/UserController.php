@@ -19,6 +19,7 @@ use App\Http\Models\UserBalanceLog;
 use App\Http\Models\UserScoreLog;
 use App\Http\Models\UserSubscribe;
 use App\Http\Models\UserTrafficDaily;
+use App\Http\Models\UserTrafficHourly;
 use App\Http\Models\Verify;
 use App\Mail\activeUser;
 use App\Mail\resetPassword;
@@ -222,14 +223,23 @@ class UserController extends BaseController
         $user = $request->session()->get('user');
 
         // 30天内的流量
-        $userTrafficDaily = UserTrafficDaily::query()->where('user_id', $user['id'])->where('node_id', 0)->orderBy('id', 'asc')->limit(30)->get();
+        $userTrafficDaily = UserTrafficDaily::query()->where('user_id', $user['id'])->where('node_id', 0)->orderBy('id', 'desc')->limit(30)->get();
 
         $dailyData = [];
         foreach ($userTrafficDaily as $daily) {
             $dailyData[] = round($daily->total / (1024 * 1024), 2); // 以M为单位
         }
 
+        // 24小时内的流量
+        $userTrafficHourly = UserTrafficHourly::query()->where('user_id', $user['id'])->where('node_id', 0)->orderBy('id', 'desc')->limit(24)->get();
+
+        $hourlyData = [];
+        foreach ($userTrafficHourly as $hourly) {
+            $hourlyData[] = round($hourly->total / (1024 * 1024), 2); // 以M为单位
+        }
+
         $view['trafficDaily'] = "'" . implode("','", $dailyData) . "'";
+        $view['trafficHourly'] = "'" . implode("','", $hourlyData) . "'";
 
         return Response::view('user/trafficLog', $view);
     }
@@ -237,7 +247,12 @@ class UserController extends BaseController
     // 商品列表
     public function goodsList(Request $request)
     {
-        $view['goodsList'] = Goods::query()->where('status', 1)->where('is_del', 0)->paginate(10)->appends($request->except('page'));
+        $goodsList = Goods::query()->where('status', 1)->where('is_del', 0)->paginate(10)->appends($request->except('page'));
+        foreach ($goodsList as $goods) {
+            $goods->price = $goods->price / 100;
+        }
+
+        $view['goodsList'] = $goodsList;
 
         return Response::view('user/goodsList', $view);
     }
@@ -263,6 +278,7 @@ class UserController extends BaseController
                 foreach ($order->goodsList as &$goods) {
                     $g = Goods::query()->where('id', $goods->goods_id)->first();
                     $goods->goods_name = empty($g) ? '【该商品已删除】' : $g->name;
+                    $goods->price = $goods->price / 100;
                 }
             }
         }
@@ -669,7 +685,7 @@ class UserController extends BaseController
 
         $data = [
             'type'     => $coupon->type,
-            'amount'   => $coupon->amount,
+            'amount'   => $coupon->amount / 100,
             'discount' => $coupon->discount
         ];
 
@@ -749,7 +765,7 @@ class UserController extends BaseController
                 $userBalanceLogObj->order_id = $order->oid;
                 $userBalanceLogObj->before = $user->balance;
                 $userBalanceLogObj->after = $user->balance - $totalPrice;
-                $userBalanceLogObj->balance = $totalPrice;
+                $userBalanceLogObj->amount = -1 * $totalPrice;
                 $userBalanceLogObj->desc = '购买流量包';
                 $userBalanceLogObj->created_at = date('Y-m-d H:i:s');
                 $userBalanceLogObj->save();
@@ -803,6 +819,7 @@ class UserController extends BaseController
                 return Redirect::to('user/goodsList');
             }
 
+            $goods->price = $goods->price / 100;
             $view['goods'] = $goods;
 
             return Response::view('user/addOrder', $view);
@@ -861,10 +878,18 @@ class UserController extends BaseController
         $view['referral_traffic'] = $this->flowAutoShow(self::$config['referral_traffic'] * 1048576);
         $view['referral_percent'] = self::$config['referral_percent'];
         $view['referral_money'] = self::$config['referral_money'];
-        $view['referralLogList'] = ReferralLog::query()->where('ref_user_id', $user['id'])->with('user')->paginate();
-        $view['totalAmount'] = ReferralLog::query()->where('ref_user_id', $user['id'])->sum('ref_amount');
-        $view['canAmount'] = ReferralLog::query()->where('ref_user_id', $user['id'])->where('status', 0)->sum('ref_amount');
+        $view['totalAmount'] = ReferralLog::query()->where('ref_user_id', $user['id'])->sum('ref_amount') / 100;
+        $view['canAmount'] = ReferralLog::query()->where('ref_user_id', $user['id'])->where('status', 0)->sum('ref_amount') / 100;
         $view['link'] = self::$config['website_url'] . '/register?aff=' . $user['id'];
+
+        $referralLogList = ReferralLog::query()->where('ref_user_id', $user['id'])->with('user')->paginate(10);
+        if (!empty($referralLogList)) {
+            foreach ($referralLogList as &$referral) {
+                $referral->amount = $referral->amount / 100;
+                $referral->ref_amount = $referral->ref_amount / 100;
+            }
+        }
+        $view['referralLogList'] = $referralLogList;
 
         return Response::view('user/referral', $view);
     }
@@ -882,7 +907,7 @@ class UserController extends BaseController
 
         // 校验可以提现金额是否超过系统设置的阀值
         $ref_amount = ReferralLog::query()->where('ref_user_id', $user['id'])->where('status', 0)->sum('ref_amount');
-        if ($ref_amount < self::$config['referral_money']) {
+        if ($ref_amount / 100 < self::$config['referral_money']) {
             return Response::json(['status' => 'fail', 'data' => '', 'message' => '申请失败：满' . self::$config['referral_money'] . '元才可以提现，继续努力吧']);
         }
 
