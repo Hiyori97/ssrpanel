@@ -56,7 +56,7 @@
                 <span class="form-title">重置密码</span>
             </div>
             <div class="form-group">
-                <input class="form-control placeholder-no-fix" type="text" autocomplete="off" placeholder="请输入用户名" name="username" value="{{Request::old('username')}}" required />
+                <input class="form-control placeholder-no-fix" type="text" autocomplete="off" placeholder="请输入注册邮箱" name="username" value="{{Request::old('username')}}" required />
                 <input type="hidden" name="_token" value="{{csrf_token()}}" />
             </div>
         @else
