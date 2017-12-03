@@ -92,7 +92,7 @@ class UserController extends BaseController
             $ss_str = '';
             $ss_str .= $user->method . ':' . $user->passwd . '@';
             $ss_str .= $node->server . ':' . $user->port;
-            $ss_str = $this->base64url_encode($ss_str) . '#' . 'VPN';
+            $ss_str = $this->base64url_encode($ss_str) . '#' . 'HiyoriSSR';
             $ss_scheme = 'ss://' . $ss_str;
 
             // 生成文本配置信息

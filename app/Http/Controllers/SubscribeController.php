@@ -75,7 +75,7 @@ class SubscribeController extends BaseController
             $ssr_str .= '/?obfsparam=' . $this->base64url_encode($obfs_param);
             $ssr_str .= '&protoparam=' . $this->base64url_encode($protocol_param);
             $ssr_str .= '&remarks=' . $this->base64url_encode($node->name);
-            $ssr_str .= '&group=' . $this->base64url_encode('VPN');
+            $ssr_str .= '&group=' . $this->base64url_encode('HiyoriSSR');
             $ssr_str .= '&udpport=0';
             $ssr_str .= '&uot=0';
             $ssr_str = $this->base64url_encode($ssr_str);

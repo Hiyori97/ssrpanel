@@ -1022,7 +1022,7 @@ class AdminController extends BaseController
             $ss_str = '';
             $ss_str .= $user->method . ':' . $user->passwd . '@';
             $ss_str .= $node->server . ':' . $user->port;
-            $ss_str = $this->base64url_encode($ss_str) . '#' . 'VPN'; // 加入#VPN是为了shadowrocket和ssr安卓客户端扫描时带上节点名称，windows c#版无效
+            $ss_str = $this->base64url_encode($ss_str) . '#' . 'HiyoriSSR'; // 加入#VPN是为了shadowrocket和ssr安卓客户端扫描时带上节点名称，windows c#版无效
             $ss_scheme = 'ss://' . $ss_str;
 
             // 生成文本配置信息
