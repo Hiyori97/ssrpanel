@@ -120,12 +120,14 @@ CREATE TABLE `user` (
   `reg_ip` varchar(20) NOT NULL DEFAULT '127.0.0.1' COMMENT '注册IP',
   `last_login` int(11) NOT NULL DEFAULT '0' COMMENT '最后登录时间',
   `referral_uid` int(11) NOT NULL DEFAULT '0' COMMENT '邀请人',
+  `traffic_reset_day` tinyint(4) NOT NULL DEFAULT '0' COMMENT '流量自动重置日，0表示不重置',
   `status` tinyint(4) NOT NULL DEFAULT '0' COMMENT '状态：-1-禁用、0-未激活、1-正常',
   `created_at` datetime DEFAULT NULL,
   `updated_at` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `port` (`port`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 
 LOCK TABLES `user` WRITE;
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
@@ -282,6 +284,7 @@ INSERT INTO `config` VALUES ('32', 'is_captcha', 0);
 INSERT INTO `config` VALUES ('33', 'is_traffic_ban', 1);
 INSERT INTO `config` VALUES ('34', 'traffic_ban_value', 10);
 INSERT INTO `config` VALUES ('35', 'traffic_ban_time', 60);
+INSERT INTO `config` VALUES ('36', 'is_clear_log', 1);
 
 
 -- ----------------------------
