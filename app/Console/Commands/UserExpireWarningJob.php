@@ -46,7 +46,7 @@ class UserExpireWarningJob extends Command
                     $content = '账号还剩【' . $lastCanUseDays . '】天即将过期';
 
                     try {
-                        Mail::to($user->username)->send(new userExpireWarning(self::$config['website_name'], $lastCanUseDays));
+                        Mail::to($user->username)->send(new userExpireWarning(self::$config['website_name'], $lastCanUseDays, self::$config['website_url']));
                         $this->sendEmailLog($user->id, $title, $content);
                     } catch (\Exception $e) {
                         $this->sendEmailLog($user->id, $title, $content, 0, $e->getMessage());
