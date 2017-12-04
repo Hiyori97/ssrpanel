@@ -46,7 +46,7 @@ class UserTrafficWarningJob extends Command
                     $content = '流量已使用：' . $usedPercent . '%，超过设置的流量阈值' . self::$config['traffic_warning_percent'] . '%';
 
                     try {
-                        Mail::to($user->username)->send(new userTrafficWarning(self::$config['website_name'], $usedPercent));
+                        Mail::to($user->username)->send(new userTrafficWarning(self::$config['website_name'], $usedPercent, self::$config['website_url']));
                         $this->sendEmailLog($user->id, $title, $content);
                     } catch (\Exception $e) {
                         $this->sendEmailLog($user->id, $title, $content, 0, $e->getMessage());
