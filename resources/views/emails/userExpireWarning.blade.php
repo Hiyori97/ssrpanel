@@ -69,7 +69,11 @@
                                     <th style="Margin:0;color:#333;font-family:Helvetica,Arial,sans-serif;font-size:16px;font-weight:400;line-height:19px;margin:0;padding:0;text-align:left">
                                         <div class="release" style="padding-top:5px;padding-left:20px;padding-bottom:20px;">
                                             <p>这是一封来自 {{$websiteName}} 的账号过期提醒。</p>
-                                            <p>您的账号【{{$lastCanUseDays}}】天后即将过期，为了确保您可要继续正常享受我们的服务，请及时续期。</p>
+                                            @if($lastCanUseDays)
+                                                <p>您的账号【{{$lastCanUseDays}}】天后即将过期，为了确保您可要继续正常享受我们的服务，请及时续期。</p>
+                                            @else
+                                                <p>您的账号今天即将过期，为了确保您可要继续正常享受我们的服务，请及时续期。</p>
+                                            @endif
                                             <p>点击这里去<a href="{{$websiteShopUrl}}" target="_blank">【购买商品】</a>，或者点击下面的链接。</p>
                                             <p>
                                                 <a href="{{$websiteShopUrl}}" target="_blank">{{$websiteShopUrl}}</a>
