@@ -141,7 +141,7 @@ class RegisterController extends BaseController
             $user->password = hash("sha256", $password);
             $user->port = $port;
             $user->passwd = $this->makeRandStr();
-            $user->transfer_enable = $transfer_enable;
+            $user->transfer_enable = float($transfer_enable);
             $user->method = $method ? $method->name : 'aes-192-ctr';
             $user->protocol = $protocol ? $protocol->name : 'auth_chain_a';
             $user->obfs = $obfs ? $obfs->name : 'tls1.2_ticket_auth';
