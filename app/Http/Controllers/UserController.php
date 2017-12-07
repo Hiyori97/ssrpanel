@@ -793,7 +793,7 @@ class UserController extends BaseController
                 // 将商品的有效期和流量自动重置日期加到账号上
                 $traffic_reset_day = $goods->type == 2 ? (in_array(date('d'), [29, 30, 31]) ? 28 : abs(date('d'))) : 0;
                 //判断是否直接增加时间
-                if ($user->enanle) {
+                if ($user->enable !=0) {
                     $expire_time = date('Y-m-d H:i:s', strtotime("+" . $goods->days . " days", strtotime($user->expire_time)));
                 }
                 else {
