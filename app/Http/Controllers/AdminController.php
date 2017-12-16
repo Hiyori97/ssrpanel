@@ -248,7 +248,7 @@ class AdminController extends BaseController
                 'username'             => $username,
                 'port'                 => $port,
                 'passwd'               => $passwd,
-                'transfer_enable'      => $this->toGB($transfer_enable),
+                'transfer_enable'      => (float)$this->toGB($transfer_enable),
                 'enable'               => $status < 0 ? 0 : $enable, // 如果禁止登陆则同时禁用SSR
                 'method'               => $method,
                 'custom_method'        => $method,
