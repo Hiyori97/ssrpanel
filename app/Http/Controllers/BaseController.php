@@ -147,7 +147,7 @@ class BaseController extends Controller
         $lines = array();
         while (count($lines) <= $n) {
             try {
-                fseek($fp, -$pos, SEEK_END);
+                fseek($fp, (int)(-$pos), SEEK_END);
             } catch (Exception $e) {
                 fseek(0);
                 break;
