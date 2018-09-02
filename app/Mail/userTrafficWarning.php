@@ -16,7 +16,7 @@ class userTrafficWarning extends Mailable
     protected $websiteUrl;
     protected $websiteShopUrl;
 
-    public function __construct($websiteName, $usedPercent)
+    public function __construct($websiteName, $usedPercent, $websiteUrl)
     {
         $this->websiteName = $websiteName;
         $this->usedPercent = $usedPercent;
