@@ -44,11 +44,11 @@ class AutoDecGoodsTraffic extends Command
                         continue;
                     }
 
-                    if ($order->user->transfer_enable - $order->goods->traffic * 1048576 <= 0) {
-                        User::query()->where('id', $order->user_id)->update(['u' => 0, 'd' => 0, 'transfer_enable' => 0]);
-                    } else {
-                        User::query()->where('id', $order->user_id)->decrement('transfer_enable', $order->goods->traffic * 1048576);
-                    }
+                    // if ($order->user->transfer_enable - $order->goods->traffic * 1048576 <= 0) {
+                    //     User::query()->where('id', $order->user_id)->update(['u' => 0, 'd' => 0, 'transfer_enable' => 0]);
+                    // } else {
+                    //     User::query()->where('id', $order->user_id)->decrement('transfer_enable', $order->goods->traffic * 1048576);
+                    // }
 
                     // 删除该商品对应用户的所有标签
                     UserLabel::query()->where('user_id', $order->user->id)->delete();

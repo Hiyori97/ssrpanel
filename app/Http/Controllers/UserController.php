@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Components\ServerChan;
 use App\Http\Models\Article;
 use App\Http\Models\Coupon;
+use App\Http\Models\Config;
 use App\Http\Models\Goods;
 use App\Http\Models\GoodsLabel;
 use App\Http\Models\Invite;
@@ -152,6 +153,8 @@ class UserController extends Controller
         }
 
         $view['nodeList'] = $nodeList;
+        $config = $this->systemConfig();
+        $view['reset_traffic'] = $config['reset_traffic'];
 
         return Response::view('user/index', $view);
     }
@@ -795,7 +798,7 @@ class UserController extends Controller
                 Session::flash('errorMsg', '密码不能为空');
 
                 return Redirect::back();
-            } elseif (hash("sha256", $password) != hash("sha256", $repassword))) {
+            } elseif (hash("sha256", $password) != hash("sha256", $repassword)) {
                 Session::flash('errorMsg', '两次输入密码不一致，请重新输入');
 
                 return Redirect::back();
@@ -952,7 +955,7 @@ class UserController extends Controller
                 $order->coupon_id = !empty($coupon) ? $coupon->id : 0;
                 $order->origin_amount = $goods->price;
                 $order->amount = $amount;
-                $order->expire_at = date("Y-m-d H:i:s", strtotime("+" . $goods->days . " days"));
+                $order->expire_at = date("Y-m-d H:i:s", strtotime("+" . $goods->days . " days", strtotime($user->expire_time)));
                 $order->is_expire = 0;
                 $order->pay_way = 1;
                 $order->status = 2;
@@ -976,18 +979,18 @@ class UserController extends Controller
                 }
 
                 // 如果买的是套餐，则先将之前购买的所有套餐置都无效，并扣掉之前所有套餐的流量，并移除之前所有套餐的标签
-                if ($goods->type === 2) {
-                    $existOrderList = Order::query()->with('goods')->whereHas('goods', function ($q) {
-                        $q->where('type', 2);
-                    })->where('user_id', $user->id)->where('oid', '<>', $order->oid)->where('is_expire', 0)->where('status', 2)->get();
-                    foreach ($existOrderList as $vo) {
-                        Order::query()->where('oid', $vo->oid)->update(['is_expire' => 1]);
-                        User::query()->where('id', $user->id)->decrement('transfer_enable', $vo->goods->traffic * 1048576);
-                    }
+                // if ($goods->type === 2) {
+                //     $existOrderList = Order::query()->with('goods')->whereHas('goods', function ($q) {
+                //         $q->where('type', 2);
+                //     })->where('user_id', $user->id)->where('oid', '<>', $order->oid)->where('is_expire', 0)->where('status', 2)->get();
+                //     foreach ($existOrderList as $vo) {
+                //         Order::query()->where('oid', $vo->oid)->update(['is_expire' => 1]);
+                //         User::query()->where('id', $user->id)->decrement('transfer_enable', $vo->goods->traffic * 1048576);
+                //     }
 
-                    // 重置已用流量
-                    User::query()->where('id', $user->id)->update(['u' => 0, 'd' => 0]);
-                }
+                //     // 重置已用流量
+                //     User::query()->where('id', $user->id)->update(['u' => 0, 'd' => 0]);
+                // }
 
                 // 把商品的流量加到账号上
                 User::query()->where('id', $user->id)->increment('transfer_enable', $goods->traffic * 1048576);
