@@ -306,7 +306,7 @@ class AdminController extends Controller
             $password = $request->get('password');
             $port = intval($request->get('port'));
             $passwd = $request->get('passwd');
-            $transfer_enable = $request->get('transfer_enable');
+            $transfer_enable = (float)$request->get('transfer_enable');
             $enable = intval($request->get('enable'));
             $method = $request->get('method');
             $protocol = $request->get('protocol');
