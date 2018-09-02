@@ -60,9 +60,9 @@ class ShopController extends Controller
                 return Redirect::back()->withInput();
             }
 
-            // 套餐有效天数必须大于90天
-            if ($type == 2 && $days < 90) {
-                Session::flash('errorMsg', '套餐有效天数必须不能少于90天');
+            // 套餐有效天数必须大于3天
+            if ($type == 2 && $days < 3) {
+                Session::flash('errorMsg', '套餐有效天数必须不能少于3天');
 
                 return Redirect::back()->withInput();
             }
