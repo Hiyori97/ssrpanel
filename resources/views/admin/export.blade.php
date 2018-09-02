@@ -7,43 +7,52 @@
 @section('title', '控制面板')
 @section('content')
     <!-- BEGIN CONTENT BODY -->
-    <div class="page-content">
-        <!-- BEGIN PAGE BREADCRUMB -->
-        <ul class="page-breadcrumb breadcrumb">
-            <li>
-                <a href="{{url('admin/userList')}}">账号管理</a>
-                <i class="fa fa-circle"></i>
-            </li>
-            <li>
-                <a href="{{url('admin/export')}}">导出配置信息</a>
-            </li>
-        </ul>
-        <!-- END PAGE BREADCRUMB -->
+    <div class="page-content" style="padding-top:0;">
         <!-- BEGIN PAGE BASE CONTENT -->
         <div class="row">
             <div class="col-md-12">
                 <!-- BEGIN PORTLET-->
                 <div class="portlet light bordered">
+                    <div class="portlet-title">
+                        <div class="caption font-dark">
+                            <span class="caption-subject bold uppercase"> 【{{$user->username}}】连接配置信息 </span>
+                        </div>
+                        <div class="actions">
+                            <div class="btn-group">
+                                <button class="btn sbold blue" onclick="addLabel()"> 添加标签 </button>
+                            </div>
+                        </div>
+                    </div>
                     <div class="portlet-body">
-                        <div class="table-scrollable">
-                            <table class="table table-hover table-striped table-bordered">
+                        <div class="table-scrollable table-scrollable-borderless">
+                            <table class="table table-hover table-light">
                                 <thead>
-                                    <tr>
-                                        <th>节点</th>
-                                        <th>配置信息</th>
+                                    <tr class="uppercase">
+                                        <th style="width: 10%;">#</th>
+                                        <th style="width: 15%;">节点</th>
+                                        <th style="width: 10%;">扩展</th>
+                                        <th style="width: 15%;">域名</th>
+                                        <th style="width: 15%;">IPv4</th>
+                                        <th style="width: 35%;">配置信息</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach($nodeList as $node)
+                                    @foreach($nodeList as $k => $node)
                                         <tr>
+                                            <td>{{$k + 1}}</td>
                                             <td>
                                                 {{$node->name}}
-                                                @if($node->compatible) <span class="label label-info">兼</span> @endif
-                                                @if($node->single) <span class="label label-danger">单</span> @endif
                                             </td>
                                             <td>
+                                                @if($node->compatible) <span class="label label-info">兼</span> @endif
+                                                @if($node->single) <span class="label label-danger">单</span> @endif
+                                                @if($node->ipv6) <span class="label label-danger">IPv6</span> @endif
+                                            </td>
+                                            <td>{{$node->server}}</td>
+                                            <td>{{$node->ip}}</td>
+                                            <td>
                                                 <a class="btn btn-sm green btn-outline" data-toggle="modal" href="#txt_{{$node->id}}"> 文本 </a>
-                                                <a class="btn btn-sm green btn-outline" data-toggle="modal" href="#scheme_{{$node->id}}"> SCHEME </a>
+                                                <a class="btn btn-sm green btn-outline" data-toggle="modal" href="#link_{{$node->id}}"> SCHEME </a>
                                                 <a class="btn btn-sm green btn-outline" data-toggle="modal" href="#qrcode_{{$node->id}}"> 二维码 </a>
                                             </td>
                                         </tr>
@@ -76,20 +85,21 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="modal fade draggable-modal" id="scheme_{{$node->id}}" tabindex="-1" role="basic" aria-hidden="true">
+                            <div class="modal fade draggable-modal" id="link_{{$node->id}}" tabindex="-1" role="basic" aria-hidden="true">
                                 <div class="modal-dialog">
                                     <div class="modal-content">
                                         <div class="modal-header">
                                             <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
-                                            <h4 class="modal-title">Url Scheme</h4>
+                                            <h4 class="modal-title">Scheme Links - {{$node->name}}</h4>
                                         </div>
                                         <div class="modal-body">
-                                            <textarea class="form-control" rows="7" readonly="readonly">
-                                                {{$node->ssr_scheme}}
-                                                @if ($node->compatible)
-                                                    {{$node->ss_scheme}}
-                                                @endif
-                                            </textarea>
+                                            <textarea class="form-control" rows="5" readonly="readonly">{{$node->ssr_scheme}}</textarea>
+                                            <a href="{{$node->ssr_scheme}}" class="btn purple uppercase" style="display: block; width: 100%;margin-top: 10px;">打开SSR</a>
+                                            @if($node->ss_scheme)
+                                                <p></p>
+                                                <textarea class="form-control" rows="3" readonly="readonly">{{$node->ss_scheme}}</textarea>
+                                                <a href="{{$node->ss_scheme}}" class="btn blue uppercase" style="display: block; width: 100%;margin-top: 10px;">打开SS</a>
+                                            @endif
                                         </div>
                                     </div>
                                 </div>
@@ -105,17 +115,14 @@
                                             <div class="row">
                                                 @if ($node->compatible)
                                                     <div class="col-md-6">
-                                                        <div style="font-size:16px;text-align:center;padding-bottom:10px;"><span>SSR</span></div>
-                                                        <div id="qrcode_ssr_img_{{$node->id}}"></div>
+                                                        <div id="qrcode_ssr_img_{{$node->id}}" style="text-align: center;"></div>
                                                     </div>
                                                     <div class="col-md-6">
-                                                        <div style="font-size:16px;text-align:center;padding-bottom:10px;"><span>SS</span></div>
-                                                        <div id="qrcode_ss_img_{{$node->id}}"></div>
+                                                        <div id="qrcode_ss_img_{{$node->id}}" style="text-align: center;"></div>
                                                     </div>
                                                 @else
                                                     <div class="col-md-12">
-                                                        <div style="font-size:16px;text-align:center;padding-bottom:10px;"><span>SSR</span></div>
-                                                        <div id="qrcode_ssr_img_{{$node->id}}"></div>
+                                                        <div id="qrcode_ssr_img_{{$node->id}}" style="text-align: center;"></div>
                                                     </div>
                                                 @endif
                                             </div>
@@ -142,7 +149,7 @@
             var n = function () {
                 @foreach($nodeList as $node)
                     $("#txt_{{$node->id}}").draggable({handle: ".modal-header"});
-                    $("#scheme_{{$node->id}}").draggable({handle: ".modal-header"});
+                    $("#link_{{$node->id}}").draggable({handle: ".modal-header"});
                     $("#qrcode_{{$node->id}}").draggable({handle: ".modal-header"});
                 @endforeach
             };

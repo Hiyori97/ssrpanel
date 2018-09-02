@@ -1,105 +1,80 @@
-## 演示站(已挂)
+## 项目描述
 ````
-http://www.ssrpanel.com
-用户名：admin
-密码：123456
+1.SSR多节点账号管理面板，兼容SS、SSRR，需配合SSR或SSRR版后端使用
+2.支持v2ray（开发中）
+3.开放API，方便自行定制改造客户端
+4.内含简单的购物、卡券、邀请码、推广返利&提现、文章管理、工单（回复带邮件提醒）等模块
+5.用户、节点标签化，不同用户可见不同节点
+6.SS配置转SSR(R)配置，轻松一键导入导出SS账号
+7.单机单节点日志分析功能
+8.账号、节点24小时和本月的流量监控
+9.流量异常、节点宕机邮件或ServerChan及时通知
+10.账号临近到期、流量不够会自动发邮件提醒，自动禁用到期、流量异常的账号，自动清除日志等各种强大的定时任务
+11.后台一键添加加密方式、混淆、协议、等级
+12.屏蔽常见爬虫、屏蔽机器人
+14.支持单端口多用户
+15.支持节点订阅功能，可自由更换订阅地址、封禁账号订阅地址、禁止特定型号设备订阅
+17.支持多国语言，自带英日韩繁语言包
+18.订阅防投毒机制
+19.自动释放端口机制，防止端口被大量长期占用
+20.有赞云支付
+21.封特定国家、地区、封IP段（开发中）
+22.中转节点（开发中）
+23.强大的营销管理：PushBear群发消息
+24.telegram机器人（开发中）
+25.防墙监测，节点被墙自动提醒（TCP阻断）
 ````
 
-## 安装步骤
+## 演示&交流
+````
+官方站：http://www.ssrpanel.com
+演示站：http://demo.ssrpanel.com
+telegram订阅频道：https://t.me/ssrpanel
+````
+
+## 捐赠
+**以太坊钱包** : 0x968f797f194fcec05ea571723199748b58de38ba
+
+![支持作者](https://github.com/ssrpanel/ssrpanel/blob/master/public/assets/images/donate.jpg?raw=true)
+
+[VPS推荐&购买经验](https://github.com/ssrpanel/SSRPanel/wiki/VPS%E6%8E%A8%E8%8D%90&%E8%B4%AD%E4%B9%B0%E7%BB%8F%E9%AA%8C)
+
+## 安装
 #### 环境要求
 ````
 PHP 7.1 （必须）
 MYSQL 5.5 （推荐5.6+）
 内存 1G+ 
 磁盘空间 10G+
-KVM
-
-PHP必须开启gd、fileinfo组件
-
-小白建议使用LNMP傻瓜安装出php7.1 + mysql(5.5以上)
-手动编译请看WIKI [编译安装PHP7.1.7环境（CentOS）]
-使用LNMP部署时请到/usr/local/php/etc/php.ini下搜索disable_functions，把proc_开头的函数都删掉
-
-telegram频道：https://t.me/ssrpanel
-telegram群组：https://t.me/chatssrpanel
-本人未实名微信小号：dxstx77 （请勿任何转账、红包行为）
-严禁在TG群里喧哗、谈论政治、发色情信息，只聊技术不扯淡，更别刷屏惹众怒，否则踢3天，两次机会，第三次被踢你永远进不来，我都记得谁谁谁
+PHP必须开启zip、xml、curl、gd、gd2、fileinfo、openssl、mbstring组件
+安装完成后记得编辑.env中 APP_DEBUG 改为 false
 ````
-
-[VPS推荐](https://github.com/ssrpanel/ssrpanel/wiki/VPS%E6%8E%A8%E8%8D%90)
-````
-部署面板必须得用到VPS
-强烈推荐使用1G以上内存的KVM架构的VPS
-做节点则只需要512M+内存的KVM即可
-（节点强烈不建议使用OVZ，一无法加速二容易崩溃，512M以下内存的容易经常性宕机，即便是KVM）
-````
-
-#### 打赏作者
-````
-如果你觉得这套代码好用，微信扫一下进行打赏
-在使用过程中有发现问题就提issue，有空我会改的
-持续开发，喜欢请star一下，如果你发现什么好玩的东西，也请发到issue
-````
-![打赏作者](https://github.com/ssrpanel/ssrpanel/blob/master/public/assets/images/donate.jpeg?raw=true)
-
-#### 打赏名单
-|昵称|金额|
-|:-------|--------:| 
-|Law-杰|￥10| 
-|Err| ￥51 | 
-|緃噺開始 |￥5| 
-|【要求匿名】|￥267|
-|、无奈|￥5|
-|Sunny Woon|￥10|
-|aazzpp678|￥26|
-|风云_1688|￥15|
-|Royal|￥25|
-|bingo|￥8|
-|Eason|￥10|
-|【要求匿名】|￥270|
-|暮风|￥20|
-|huigeer|￥10|
-|真想悠哉|￥88|
-|osmond|￥10|
-|风云_1688|￥20|
-|穆飞|￥10|
-|文青|￥10|
-|Sherl|￥48|
-|小孑、|￥20|
-|曾健|￥10|
-|Lojbk|￥10|
-|Denny Wei|￥100|
-
-
-这些捐赠的用途：
-- 1.30刀买了1台VPS做开发测试用（已被BAN）
-- 2.30刀买了一个Beyond Compare 4 Standard的正版激活码
-- 3.感谢`izhangxm`提交了自定义等级的分支代码
-- 4.感谢`Hao-Luo`提供的节点一键部署脚本
-
 
 #### 拉取代码
 ````
 cd /home/wwwroot/
-git clone https://github.com/ssrpanel/ssrpanel.git
+git clone https://github.com/ssrpanel/SSRPanel.git
 ````
 
-#### 先配置数据库
+#### 配置数据库
 ````
-mysql 创建一个数据库，然后自行导入sql\db.sql
-config\database.php 中的mysql选项自行配置数据库
+1.创建一个utf8mb4的数据库
+2.编辑 .env 文件，修改 DB_ 开头的值
+3.导入 sql/db.sql 到数据库
 ````
 
-#### 其次配置一下运行环境
+#### 安装面板
 ````
-cd ssrpanel/
+cd SSRPanel/
+cp .env.example .env
+（然后 vi .env 修改数据库的连接信息）
 php composer.phar install
 php artisan key:generate
 chown -R www:www storage/
 chmod -R 777 storage/
 ````
 
-#### 然后NGINX配置文件加入
+#### 加入NGINX的URL重写规则
 ````
 location / {
     try_files $uri $uri/ /index.php$is_args$args;
@@ -128,40 +103,28 @@ service nginx restart
 service php-fpm restart
 ````
 
-## 定时任务（发邮件、流量统计、自动任务全部需要用到）
+## 定时任务
 ````
-编辑crontab
-crontab -e
+crontab加入如下命令（请自行修改php、ssrpanel路径）：
+* * * * * php /home/wwwroot/SSRPanel/artisan schedule:run >> /dev/null 2>&1
 
-然后加入如下（请自行修改ssrpanel路径）：
-（表示每分钟都执行定时任务，具体什么任务什么时候执行程序里已经定义了，请不要乱改，否则流量统计数据可能出错）
-* * * * * php /home/wwwroot/ssrpanel/artisan schedule:run >> /dev/null 2>&1
+注意运行权限，必须跟ssrpanel项目权限一致，否则出现各种莫名其妙的错误
+例如用lnmp的话默认权限用户组是 www:www，则添加定时任务是这样的：
+crontab -e -u www
 ````
 
 ## 邮件配置
 ###### SMTP
 ````
-编辑 config\mail.php
-
-请自行配置如下内容
-'driver' => 'smtp',
-'host' => 'smtp.exmail.qq.com',
-'port' => 465,
-'from' => [
-    'address' => 'xxx@qq.com',
-    'name' => 'SSRPanel',
-],
-'encryption' => 'ssl',
-'username' => 'xxx@qq.com',
-'password' => 'xxxxxx',
+编辑 .env 文件，修改 MAIL_ 开头的配置
 ````
 
-###### Mailgun
+###### 使用Mailgun发邮件
 ````
-编辑 config\mail.php
-将 driver 值改为 mailgun
+编辑 .env 文件
+将 MAIL_DRIVER 值改为 mailgun
 
-编辑 config/services.php
+然后编辑 config/services.php
 
 请自行配置如下内容
 'mailgun' => [
@@ -170,31 +133,46 @@ crontab -e
 ],
 ````
 
+###### 发邮件失败处理
+````
+如果使用了逗比的ban_iptables.sh来防止用户发垃圾邮件
+可能会导致出现 Connection could not be established with host smtp.exmail.qq.com [Connection timed out #110] 这样的错误
+因为smtp发邮件必须用到25,26,465,587这四个端口，逗比的一键脚本会将这些端口一并封禁
+可以编辑iptables，注释掉以下这段（前面加个#号就可以），然后保存并重启iptables
+#-A OUTPUT -p tcp -m multiport --dports 25,26,465,587 -m state --state NEW,ESTABLISHED -j REJECT --reject-with icmp-port-unreachable
+````
+
+## 英文版
+````
+修改 .env 的 APP_LOCALE 值为 en
+语言包位于 resources/lang 下，可自行更改
+````
+
 ## 日志分析（仅支持单机单节点）
 ````
 找到SSR服务端所在的ssserver.log文件
 进入ssrpanel所在目录，建立一个软连接，并授权
-cd /home/wwwroot/ssrpanel/public/storage/app/public
+cd /home/wwwroot/SSRPanel/storage/app
 ln -S ssserver.log /root/shadowsocksr/ssserver.log
 chown www:www ssserver.log
 ````
 
-## SSR部署
-###### 手动部署
+## SSR(R)部署
+###### 手动部署(基于SSRR 3.2.2，推荐)
 ````
-cp server/ssr-3.4.0.zip /root/
-cd /root
-unzip ssr-3.4.0.zip
+git clone https://github.com/ssrpanel/shadowsocksr.git
 cd shadowsocksr
 sh initcfg.sh
-把 userapiconfig.py 里的 API_INTERFACE 设置为 glzjinmod
-把 user-config.json 里的 connect_verbose_info 设置为 1
 配置 usermysql.json 里的数据库链接，NODE_ID就是节点ID，对应面板后台里添加的节点的自增ID，所以请先把面板搭好，搭好后进后台添加节点
 ````
 
-###### 一键自动部署
+###### 一键自动部署(基于SSR3.4)(不推荐，该版本有内存溢出BUG)
 ````
 wget -N --no-check-certificate https://raw.githubusercontent.com/ssrpanel/ssrpanel/master/server/deploy_ssr.sh;chmod +x deploy_ssr.sh;./deploy_ssr.sh
+
+或者使用另一个脚本
+
+wget -N --no-check-certificate https://raw.githubusercontent.com/maxzh0916/Shadowsowcks1Click/master/Shadowsowcks1Click.sh;chmod +x Shadowsowcks1Click.sh;./Shadowsowcks1Click.sh
 ````
 
 ## 更新代码
@@ -205,16 +183,18 @@ git pull
 如果每次更新都会出现数据库文件被覆盖，请先执行一次：
 chmod a+x fix_git.sh && sh fix_git.sh
 
-如果本地自行改了文件，想用回原版代码，请先备份好 config/database.php，然后执行以下命令：
+如果本地自行改了文件，想用回原版代码，请直接执行以下命令：
 chmod a+x update.sh && sh update.sh
+
+如果更新完代码各种错误，请先执行一遍 php composer.phar install
 ````
 
-## 网卡流量监控一键脚本
+## 网卡流量监控一键脚本（Vnstat）
 ````
 wget -N --no-check-certificate https://raw.githubusercontent.com/ssrpanel/ssrpanel/master/server/deploy_vnstat.sh;chmod +x deploy_vnstat.sh;./deploy_vnstat.sh
 ````
 
-## 单端口多用户（推荐）
+## 单端口多用户
 ````
 编辑节点的 user-config.json 文件：
 vim user-config.json
@@ -224,9 +204,9 @@ vim user-config.json
     "80": {
         "passwd": "统一认证密码", // 例如 SSRP4ne1，推荐不要出现除大小写字母数字以外的任何字符
         "method": "统一认证加密方式", // 例如 aes-128-ctr
-        "protocol": "统一认证协议", // 例如 auth_aes128_md5 或者 auth_aes128_sha1，目前只有这两种
-        "protocol_param": "#",
-        "obfs": "tls1.2_ticket_auth_compatible",
+        "protocol": "统一认证协议", // 可选值：orgin、verify_deflate、auth_sha1_v4、auth_aes128_md5、auth_aes128_sha1、auth_chain_a
+        "protocol_param": "#", // #号前面带上数字，则可以限制在线每个用户的最多在线设备数，仅限 auth_chain_a 协议下有效，例如： 3# 表示限制最多3个设备在线
+        "obfs": "tls1.2_ticket_auth", // 可选值：plain、http_simple、http_post、random_head、tls1.2_ticket_auth
         "obfs_param": ""
     },
     "443": {
@@ -234,12 +214,12 @@ vim user-config.json
         "method": "统一认证加密方式",
         "protocol": "统一认证协议",
         "protocol_param": "#",
-        "obfs": "tls1.2_ticket_auth_compatible",
+        "obfs": "tls1.2_ticket_auth",
         "obfs_param": ""
     }
 },
 
-保存，然后重启SSR服务。
+保存，然后重启SSR(R)服务。
 客户端设置：
 
 远程端口：80
@@ -258,17 +238,24 @@ vim user-config.json
 混淆插件：tls1.2_ticket_auth
 协议参数：1026:SSRP4ne1 (SSR端口:SSR密码)
 
-经实测账号的协议可以是：auth_chain_a，建议节点后端使用auth_sha1_v4_compatible，方便兼容
-
+经实测，节点后端使用auth_sha1_v4_compatible，可以兼容auth_chain_a
 注意：如果想强制所有账号都走80、443这样自定义的端口的话，记得把 user-config.json 中的 additional_ports_only 设置为 true
 警告：经实测单端口下如果用锐速没有效果，很可能是VPS供应商限制了这两个端口
-提示：配置单端口最好先看下这个WIKI，防止才踩坑：https://github.com/ssrpanel/ssrpanel/wiki/%E5%8D%95%E7%AB%AF%E5%8F%A3%E5%A4%9A%E7%94%A8%E6%88%B7%E7%9A%84%E5%9D%91
+提示：配置单端口最好先看下这个WIKI，防止踩坑：https://github.com/ssrpanel/ssrpanel/wiki/%E5%8D%95%E7%AB%AF%E5%8F%A3%E5%A4%9A%E7%94%A8%E6%88%B7%E7%9A%84%E5%9D%91
 
+````
+## 代码更新
+````
+进入到SSRPanel目录下
+1.手动更新： git pull
+2.强制更新： sh ./update.sh 
+
+如果你更改了本地文件，手动更新会提示错误需要合并代码（自己搞定），强制更新会直接覆盖你本地所有更改过的文件
 ````
 
 ## 校时
 ````
-如果架构是“一面板机-一数据库机-多节点机”，请务必保持各个服务器之间的时间一致，否则会影响节点在线数的准确性和单端口多用户功能的正常使用。
+如果架构是“面板机-数据库机-多节点机”，请务必保持各个服务器之间的时间一致，否则会产生：节点的在线数不准确、最后使用时间异常、单端口多用户功能失效等。
 推荐统一使用CST时间并安装校时服务：
 vim /etc/sysconfig/clock 把值改为 Asia/Shanghai
 cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
@@ -278,45 +265,28 @@ yum install ntp
 ntpdate cn.pool.ntp.org
 ````
 
+## 二开规范
+````
+如果有小伙伴要基于本程序进行二次开发，自行定制，请谨记一下规则（如果愿意提PR我也很欢迎）
+1.数据库表字段请务必使用蟒蛇法，严禁使用驼峰法
+2.写完代码最好格式化，该空格一定要空格，该注释一定要注释，便于他人阅读代码
+3.本项目中ajax返回格式都是 {"status":"fail 或者 success", "data":[数据], "message":"文本消息提示语"}
+````
+
+## 收费版
+````
+收费版代码混淆，不开源，具体请知识星球上私信我
+````
+
 ## 致敬
+- [@shadowsocks](https://github.com/shadowsocks)
 - [@breakwa11](https://github.com/breakwa11)
 - [@glzjin](https://github.com/esdeathlove)
 - [@orvice](https://github.com/orvice)
 - [@ToyoDAdoubi](https://github.com/ToyoDAdoubi)
 - [@91yun](https://github.com/91yun)
 - [@Akkariiin](https://github.com/shadowsocksrr)
+- [@tonychanczm](https://github.com/tonychanczm)
+- [ipcheck](https://ipcheck.need.sh)
+- [check-host](https://www.check-host.net)
 
-## 说明
-````
-1.多节点账号管理面板
-2.需配合SSR 3.4 Python版后端使用
-3.强大的管理后台、美观的界面、简单易用的开关、支持移动端自适应
-4.内含简单的购物、优惠券、流量兑换、邀请码、推广返利&提现、文章管理、工单等模块
-5.节点支持分组，不同级别的用户可以看到不同级别分组的节点
-6.SS配置转SSR配置，轻松一键导入SS账号
-7.流量日志、单机单节点日志分析功能
-8.强大的定时任务
-9.所有邮件投递都有记录
-10.账号临近到期、流量不够都会自动发邮件提醒，自动禁用到期、流量异常的账号，自动清除日志
-11.后台一键添加加密方式、混淆、协议、等级
-12.强大的后台一键配置功能
-13.屏蔽常见爬虫
-14.支持单端口多用户
-15.账号、节点24小时和近30天内的流量监控
-16.支持节点订阅功能，可一键封禁账号订阅地址
-17.美观的国家图标
-````
-
-## 预览
-![Wpy0e.png](https://s1.ax1x.com/2017/11/24/Wpy0e.png)
-![WpUYR.png](https://s1.ax1x.com/2017/11/24/WpUYR.png)
-![WpNk9.png](https://s1.ax1x.com/2017/11/24/WpNk9.png)
-![WpGmF.png](https://s1.ax1x.com/2017/11/24/WpGmF.png)
-![WpJw4.png](https://s1.ax1x.com/2017/11/24/WpJw4.png)
-![WpYTJ.png](https://s1.ax1x.com/2017/11/24/WpYTJ.png)
-![Wpaf1.png](https://s1.ax1x.com/2017/11/24/Wpaf1.png)
-![WpwSx.png](https://s1.ax1x.com/2017/11/24/WpwSx.png)
-![Wp0l6.png](https://s1.ax1x.com/2017/11/24/Wp0l6.png)
-![WpB6K.png](https://s1.ax1x.com/2017/11/24/WpB6K.png)
-![WpDOO.png](https://s1.ax1x.com/2017/11/24/WpDOO.png)
-![WpsmD.png](https://s1.ax1x.com/2017/11/24/WpsmD.png)

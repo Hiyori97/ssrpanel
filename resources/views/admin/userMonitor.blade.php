@@ -6,28 +6,13 @@
 @section('title', '控制面板')
 @section('content')
     <!-- BEGIN CONTENT BODY -->
-    <div class="page-content">
-        <!-- BEGIN PAGE BREADCRUMB -->
-        <ul class="page-breadcrumb breadcrumb">
-            <li>
-                <a href="{{url('admin/userList')}}">账号管理</a>
-                <i class="fa fa-circle"></i>
-            </li>
-            <li>
-                <a href="{{url('admin/userList')}}">账号列表</a>
-                <i class="fa fa-circle"></i>
-            </li>
-            <li>
-                <a href="{{url('admin/userMonitor')}}">账号流量监控</a>
-            </li>
-        </ul>
-        <!-- END PAGE BREADCRUMB -->
+    <div class="page-content" style="padding-top:0;">
         <!-- BEGIN PAGE BASE CONTENT -->
         <div class="row">
             <div class="col-md-12">
                 <div class="note note-info">
                     <h3 class="block">{{$username}}</h3>
-                    <p> 提示：30日内流量统计不会统计当天，24小时内流量统计不会统计当前小时；如果无统计数据，请检查定时任务是否正常。 </p>
+                    <p> 提示：月流量统计不会统计当天，日流量统计不会统计当前小时；如果无统计数据，请检查定时任务是否正常。(每月1日和每日0时因为没有统计流量，不显示流量) </p>
                 </div>
             </div>
         </div>
@@ -61,8 +46,8 @@
 
         option = {
             title: {
-                text: '24小时内流量',
-                subtext: '单位M'
+                text: '今日流量',
+                subtext: '单位 / G'
             },
             tooltip: {
                 trigger: 'axis'
@@ -76,12 +61,12 @@
             xAxis: {
                 type: 'category',
                 boundaryGap: false,
-                data: ['1','2','3','4','5','6','7','8','9','10','11','12','13','14','15','16','17','18','19','20','21','22','23','24']
+                data: ['0','1','2','3','4','5','6','7','8','9','10','11','12','13','14','15','16','17','18','19','20','21','22','23']
             },
             yAxis: {
                 type: 'value',
                 axisLabel: {
-                    formatter: '{value} M'
+                    formatter: '{value} G'
                 }
             },
             series: [
@@ -110,8 +95,8 @@
 
         option = {
             title: {
-                text: '30日内流量',
-                subtext: '单位M'
+                text: '本月流量',
+                subtext: '单位 / G'
             },
             tooltip: {
                 trigger: 'axis'
@@ -125,12 +110,12 @@
             xAxis: {
                 type: 'category',
                 boundaryGap: false,
-                data: ['1','2','3','4','5','6','7','8','9','10','11','12','13','14','15','16','17','18','19','20','21','22','23','24','25','26','27','28','29','30']
+                data: [{!! $monthDays !!}]
             },
             yAxis: {
                 type: 'value',
                 axisLabel: {
-                    formatter: '{value} M'
+                    formatter: '{value} G'
                 }
             },
             series: [

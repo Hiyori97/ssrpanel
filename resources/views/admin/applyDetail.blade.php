@@ -5,15 +5,7 @@
 @section('title', '控制面板')
 @section('content')
     <!-- BEGIN CONTENT BODY -->
-    <div class="page-content">
-        <!-- BEGIN PAGE BREADCRUMB -->
-        <ul class="page-breadcrumb breadcrumb">
-            <li>
-                <a href="{{url('admin/applyList')}}">提现管理</a>
-                <i class="fa fa-circle"></i>
-            </li>
-        </ul>
-        <!-- END PAGE BREADCRUMB -->
+    <div class="page-content" style="padding-top:0;">
         <!-- BEGIN PAGE BASE CONTENT -->
         <div class="row">
             <div class="col-md-12">
@@ -59,7 +51,7 @@
                                         <th colspan="6">ID：{{$info->id}} | 申请人：{{$info->user->username}} | 提现金额：{{$info->amount}} | 申请时间：{{$info->created_at}}</th>
                                     </tr>
                                     <tr class="uppercase">
-                                        <th> ID </th>
+                                        <th> # </th>
                                         <th> 发生人 </th>
                                         <th> 发生订单 </th>
                                         <th> 发生金额 </th>
@@ -77,7 +69,7 @@
                                             <tr>
                                                 <td> {{$vo->id}} </td>
                                                 <td> {{$vo->user->username}} </td>
-                                                <td> {{$vo->goods->goods->name}}</td>
+                                                <td> {{$vo->order->goods->name}}</td>
                                                 <td> {{$vo->amount}} </td>
                                                 <td> {{$vo->ref_amount}} </td>
                                                 <td> {{$vo->created_at}} </td>

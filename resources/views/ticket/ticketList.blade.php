@@ -7,15 +7,7 @@
 @section('title', '控制面板')
 @section('content')
     <!-- BEGIN CONTENT BODY -->
-    <div class="page-content">
-        <!-- BEGIN PAGE BREADCRUMB -->
-        <ul class="page-breadcrumb breadcrumb">
-            <li>
-                <a href="{{url('ticket/ticketList')}}">工单列表</a>
-                <i class="fa fa-circle"></i>
-            </li>
-        </ul>
-        <!-- END PAGE BREADCRUMB -->
+    <div class="page-content" style="padding-top:0;">
         <!-- BEGIN PAGE BASE CONTENT -->
         <div class="row">
             <div class="col-md-12">
@@ -23,25 +15,24 @@
                 <div class="portlet light bordered">
                     <div class="portlet-title">
                         <div class="caption font-dark">
-                            <i class="icon-question font-dark"></i>
                             <span class="caption-subject bold uppercase"> 工单列表 </span>
                         </div>
                     </div>
                     <div class="portlet-body">
-                        <div class="table-scrollable">
-                            <table class="table table-striped table-bordered table-hover table-checkable order-column" id="sample_1">
+                        <div class="table-scrollable table-scrollable-borderless">
+                            <table class="table table-hover table-light">
                                 <thead>
                                 <tr>
-                                    <th> ID </th>
-                                    <th> 账号 </th>
-                                    <th> 标题 </th>
-                                    <th> 状态 </th>
+                                    <th style="width: 10%;"> # </th>
+                                    <th style="width: 20%;"> 账号 </th>
+                                    <th style="width: 55%;"> 标题 </th>
+                                    <th style="width: 15%; text-align: center;"> 状态 </th>
                                 </tr>
                                 </thead>
                                 <tbody>
                                 @if($ticketList->isEmpty())
                                     <tr>
-                                        <td colspan="4">暂无数据</td>
+                                        <td colspan="4" style="text-align: center;">暂无数据</td>
                                     </tr>
                                 @else
                                     @foreach($ticketList as $key => $ticket)
@@ -49,7 +40,7 @@
                                             <td> {{$key + 1}} </td>
                                             <td> <a href="{{url('admin/userList?username=' . $ticket->user->username)}}" target="_blank">{{$ticket->user->username}}</a> </td>
                                             <td> <a href="{{url('ticket/replyTicket?id=') . $ticket->id}}" target="_blank">{{$ticket->title}}</a> </td>
-                                            <td>
+                                            <td style="text-align: center;">
                                                 @if ($ticket->status == 0)
                                                     <span class="label label-info"> 待处理 </span>
                                                 @elseif ($ticket->status == 1)

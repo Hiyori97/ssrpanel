@@ -3,30 +3,28 @@
 namespace App\Http\Controllers;
 
 use App\Http\Models\Goods;
+use App\Http\Models\GoodsLabel;
+use App\Http\Models\Label;
 use Illuminate\Http\Request;
 use Response;
 use Redirect;
+use Session;
+use DB;
 
 /**
  * 商店控制器
  * Class LoginController
+ *
  * @package App\Http\Controllers
  */
-class ShopController extends BaseController
+class ShopController extends Controller
 {
-    protected static $config;
-
-    function __construct()
-    {
-        self::$config = $this->systemConfig();
-    }
-
     // 商品列表
     public function goodsList(Request $request)
     {
         $goodsList = Goods::query()->where('is_del', 0)->orderBy('id', 'desc')->paginate(10);
         foreach ($goodsList as $goods) {
-            $goods->price = $goods->price / 100;
+            $goods->traffic = flowAutoShow($goods->traffic * 1048576);
         }
 
         $view['goodsList'] = $goodsList;
@@ -39,16 +37,39 @@ class ShopController extends BaseController
     {
         if ($request->method() == 'POST') {
             $name = $request->get('name');
-            $desc = $request->get('desc');
+            $desc = $request->get('desc', '');
             $traffic = $request->get('traffic');
-            $price = $request->get('price');
-            $score = $request->get('score', 0);
-            $type = $request->get('type', 1);
-            $days = $request->get('days', 30);
+            $price = $request->get('price', 0);
+            $score = intval($request->get('score', 0));
+            $type = intval($request->get('type', 1));
+            $days = intval($request->get('days', 90));
+            $sort = intval($request->get('sort', 0));
+            $labels = $request->get('labels');
             $status = $request->get('status');
 
-            if (empty($name) || empty($traffic) || $price == '') {
-                $request->session()->flash('errorMsg', '请填写完整');
+            if (empty($name) || empty($traffic)) {
+                Session::flash('errorMsg', '请填写完整');
+
+                return Redirect::back()->withInput();
+            }
+
+            // 套餐必须有价格
+            if ($type == 2 && $price <= 0) {
+                Session::flash('errorMsg', '套餐价格必须大于0');
+
+                return Redirect::back()->withInput();
+            }
+
+            // 套餐有效天数必须大于90天
+            if ($type == 2 && $days < 90) {
+                Session::flash('errorMsg', '套餐有效天数必须不能少于90天');
+
+                return Redirect::back()->withInput();
+            }
+
+            // 流量不能超过10TB
+            if ($traffic > 10240000) {
+                Session::flash('errorMsg', '内含流量不能超过10TB');
 
                 return Redirect::back()->withInput();
             }
@@ -63,27 +84,50 @@ class ShopController extends BaseController
                 $logo = $move ? '/upload/image/goods/' . $logoName : '';
             }
 
-            $obj = new Goods();
-            $obj->name = $name;
-            $obj->desc = $desc;
-            $obj->logo = $logo;
-            $obj->traffic = $traffic;
-            $obj->price = $price * 100; // 单位分
-            $obj->score = $score;
-            $obj->type = $type;
-            $obj->days = $days;
-            $obj->status = $status;
-            $obj->save();
+            DB::beginTransaction();
+            try {
+                $goods = new Goods();
+                $goods->name = $name;
+                $goods->desc = $desc;
+                $goods->logo = $logo;
+                $goods->traffic = $traffic;
+                $goods->price = $price;
+                $goods->score = $score;
+                $goods->type = $type;
+                $goods->days = $days;
+                $goods->sort = $sort;
+                $goods->is_del = 0;
+                $goods->status = $status;
+                $goods->save();
 
-            if ($obj->id) {
-                $request->session()->flash('successMsg', '添加成功');
-            } else {
-                $request->session()->flash('errorMsg', '添加失败');
+                // 生成SKU
+                $goods->sku = 'S0000' . $goods->id;
+                $goods->save();
+
+                // 生成商品标签
+                if (!empty($labels)) {
+                    foreach ($labels as $label) {
+                        $goodsLabel = new GoodsLabel();
+                        $goodsLabel->goods_id = $goods->id;
+                        $goodsLabel->label_id = $label;
+                        $goodsLabel->save();
+                    }
+                }
+
+                Session::flash('successMsg', '添加成功');
+
+                DB::commit();
+            } catch (\Exception $e) {
+                Session::flash('errorMsg', '添加失败');
+
+                DB::rollBack();
             }
 
             return Redirect::to('shop/addGoods');
         } else {
-            return Response::view('shop/addGoods');
+            $view['label_list'] = Label::query()->orderBy('sort', 'desc')->orderBy('id', 'asc')->get();
+
+            return Response::view('shop/addGoods', $view);
         }
     }
 
@@ -95,15 +139,27 @@ class ShopController extends BaseController
         if ($request->method() == 'POST') {
             $name = $request->get('name');
             $desc = $request->get('desc');
-            $traffic = $request->get('traffic');
-            $price = $request->get('price');
-            $score = $request->get('score', 0);
-            $type = $request->get('type', 1);
-            $days = $request->get('days', 30);
+            $price = $request->get('price', 0);
+            $labels = $request->get('labels');
+            $sort = intval($request->get('sort', 0));
             $status = $request->get('status');
 
-            if (empty($name) || empty($traffic) || $price == '') {
-                $request->session()->flash('errorMsg', '请填写完整');
+            $goods = Goods::query()->where('id', $id)->first();
+            if (!$goods) {
+                Session::flash('errorMsg', '商品不存在');
+
+                return Redirect::back();
+            }
+
+            if (empty($name)) {
+                Session::flash('errorMsg', '请填写完整');
+
+                return Redirect::back()->withInput();
+            }
+
+            // 套餐必须有价格
+            if ($goods->type == 2 && $price <= 0) {
+                Session::flash('errorMsg', '套餐价格必须大于0');
 
                 return Redirect::back()->withInput();
             }
@@ -118,32 +174,54 @@ class ShopController extends BaseController
                 $logo = $move ? '/upload/image/goods/' . $logoName : '';
             }
 
-            $data = [
-                'name'    => $name,
-                'desc'    => $desc,
-                'logo'    => $logo,
-                'traffic' => $traffic,
-                'price'   => $price * 100, // 单位分
-                'score'   => $score,
-                'type'    => $type,
-                'days'    => $days,
-                'status'  => $status
-            ];
-            $ret = Goods::query()->where('id', $id)->update($data);
-            if ($ret) {
-                $request->session()->flash('successMsg', '编辑成功');
-            } else {
-                $request->session()->flash('errorMsg', '编辑失败');
+            DB::beginTransaction();
+            try {
+                $data = [
+                    'name'   => $name,
+                    'desc'   => $desc,
+                    'logo'   => $logo,
+                    'price'  => $price * 100,
+                    'sort'   => $sort,
+                    'status' => $status
+                ];
+
+                Goods::query()->where('id', $id)->update($data);
+
+                // 先删除该商品所有的标签
+                GoodsLabel::query()->where('goods_id', $id)->delete();
+
+                // 生成商品标签
+                if (!empty($labels)) {
+                    foreach ($labels as $label) {
+                        $goodsLabel = new GoodsLabel();
+                        $goodsLabel->goods_id = $id;
+                        $goodsLabel->label_id = $label;
+                        $goodsLabel->save();
+                    }
+                }
+
+                Session::flash('successMsg', '编辑成功');
+
+                DB::commit();
+            } catch (\Exception $e) {
+                Session::flash('errorMsg', '编辑失败');
+
+                DB::rollBack();
             }
 
             return Redirect::to('shop/editGoods?id=' . $id);
         } else {
-            $goods = Goods::query()->where('id', $id)->first();
-            if (!empty($goods)) {
-                $goods->price = $goods->price / 100;
+            $goods = Goods::query()->with(['label'])->where('id', $id)->first();
+            if ($goods) {
+                $label = [];
+                foreach ($goods->label as $vo) {
+                    $label[] = $vo->label_id;
+                }
+                $goods->labels = $label;
             }
 
             $view['goods'] = $goods;
+            $view['label_list'] = Label::query()->orderBy('sort', 'desc')->orderBy('id', 'asc')->get();
 
             return Response::view('shop/editGoods', $view);
         }

@@ -7,30 +7,12 @@
 @section('title', '控制面板')
 @section('content')
     <!-- BEGIN CONTENT BODY -->
-    <div class="page-content">
-        <!-- BEGIN PAGE BREADCRUMB -->
-        <ul class="page-breadcrumb breadcrumb">
-            <li>
-                <a href="javascript:;">设置</a>
-                <i class="fa fa-circle"></i>
-            </li>
-            <li>
-                <a href="{{url('admin/config')}}">通用配置</a>
-            </li>
-        </ul>
-        <!-- END PAGE BREADCRUMB -->
+    <div class="page-content" style="padding-top:0;">
         <!-- BEGIN PAGE BASE CONTENT -->
         <div class="row">
             <div class="col-md-12">
                 <!-- BEGIN EXAMPLE TABLE PORTLET-->
                 <div class="portlet light bordered">
-                    <div class="portlet-title">
-                        <div class="caption font-dark">
-                            <i class="icon-info font-dark"></i>
-                            <span class="caption-subject bold uppercase"> 通用配置 </span>
-                        </div>
-
-                    </div>
                     <div class="portlet-body">
                         <ul class="nav nav-tabs">
                             <li @if(Request::get('tab') == '' || Request::get('tab') == '1') class="active" @endif>
@@ -43,7 +25,7 @@
                                 <a href="#tab3" data-toggle="tab"> 混淆 </a>
                             </li>
                             <li @if(Request::get('tab') == '4') class="active" @endif>
-                                <a href="#tab4" data-toggle="tab"> 账号等级 </a>
+                                <a href="#tab4" data-toggle="tab"> 等级 </a>
                             </li>
                             <li @if(Request::get('tab') == '5') class="active" @endif>
                                 <a href="#tab5" data-toggle="tab"> 国家地区 </a>
@@ -60,25 +42,25 @@
                                     <table class="table table-striped table-bordered table-hover table-checkable order-column">
                                         <thead>
                                             <tr>
-                                                <th> ID </th>
-                                                <th> 名称 </th>
-                                                <th> 操作 </th>
+                                                <th style="width: 50%;"> 名称 </th>
+                                                <th style="width: 50%;"> 操作 </th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                         @if($method_list->isEmpty())
                                             <tr>
-                                                <td colspan="3">暂无数据</td>
+                                                <td colspan="2">暂无数据</td>
                                             </tr>
                                         @else
                                             @foreach($method_list as $method)
                                                 <tr class="odd gradeX">
-                                                    <td> {{$method->id}} </td>
                                                     <td> {{$method->name}} @if($method->is_default) <small><span class='label label-info label-sm'>默认</span></small> @endif </td>
                                                     <td>
                                                         @if(!$method->is_default)
                                                             <button type="button" class="btn btn-sm blue btn-outline" onclick="setDefault('1', '{{$method->id}}')">默认</button>
-                                                            <button type="button" class="btn btn-sm red btn-outline" onclick="delConfig('1', '{{$method->id}}')">删除</button>
+                                                            <button type="button" class="btn btn-sm red btn-outline" onclick="delConfig('1', '{{$method->id}}')">
+                                                                <i class="fa fa-trash"></i>
+                                                            </button>
                                                         @endif
                                                     </td>
                                                 </tr>
@@ -98,25 +80,25 @@
                                     <table class="table table-striped table-bordered table-hover table-checkable order-column">
                                         <thead>
                                             <tr>
-                                                <th> ID </th>
-                                                <th> 名称 </th>
-                                                <th> 操作 </th>
+                                                <th style="width: 50%;"> 名称 </th>
+                                                <th style="width: 50%;"> 操作 </th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                         @if($method_list->isEmpty())
                                             <tr>
-                                                <td colspan="3">暂无数据</td>
+                                                <td colspan="2">暂无数据</td>
                                             </tr>
                                         @else
                                             @foreach($protocol_list as $protocol)
                                                 <tr class="odd gradeX">
-                                                    <td> {{$protocol->id}} </td>
                                                     <td> {{$protocol->name}} @if($protocol->is_default) <small><span class='label label-info label-sm'>默认</span></small> @endif </td>
                                                     <td>
                                                         @if(!$protocol->is_default)
                                                             <button type="button" class="btn btn-sm blue btn-outline" onclick="setDefault('2', '{{$protocol->id}}')">默认</button>
-                                                            <button type="button" class="btn btn-sm red btn-outline" onclick="delConfig('2', '{{$protocol->id}}')">删除</button>
+                                                            <button type="button" class="btn btn-sm red btn-outline" onclick="delConfig('2', '{{$protocol->id}}')">
+                                                                <i class="fa fa-trash"></i>
+                                                            </button>
                                                         @endif
                                                     </td>
                                                 </tr>
@@ -136,25 +118,25 @@
                                     <table class="table table-striped table-bordered table-hover table-checkable order-column">
                                         <thead>
                                         <tr>
-                                            <th> ID </th>
-                                            <th> 名称 </th>
-                                            <th> 操作 </th>
+                                            <th style="width: 50%;"> 名称 </th>
+                                            <th style="width: 50%;"> 操作 </th>
                                         </tr>
                                         </thead>
                                         <tbody>
                                         @if($obfs_list->isEmpty())
                                             <tr>
-                                                <td colspan="3">暂无数据</td>
+                                                <td colspan="2">暂无数据</td>
                                             </tr>
                                         @else
                                             @foreach($obfs_list as $obfs)
                                                 <tr class="odd gradeX">
-                                                    <td> {{$obfs->id}} </td>
                                                     <td> {{$obfs->name}} @if($obfs->is_default) <small><span class='label label-info label-sm'>默认</span></small> @endif </td>
                                                     <td>
                                                         @if(!$obfs->is_default)
                                                             <button type="button" class="btn btn-sm blue btn-outline" onclick="setDefault('3', '{{$obfs->id}}')">默认</button>
-                                                            <button type="button" class="btn btn-sm red btn-outline" onclick="delConfig('3', '{{$obfs->id}}')">删除</button>
+                                                            <button type="button" class="btn btn-sm red btn-outline" onclick="delConfig('3', '{{$obfs->id}}')">
+                                                                <i class="fa fa-trash"></i>
+                                                            </button>
                                                         @endif
                                                     </td>
                                                 </tr>
@@ -174,9 +156,9 @@
                                     <table class="table table-striped table-bordered table-hover table-checkable order-column">
                                         <thead>
                                             <tr>
-                                                <th> 等级 </th>
-                                                <th> 名称 </th>
-                                                <th> 操作 </th>
+                                                <th style="width: 35%;"> 等级 </th>
+                                                <th style="width: 35%;"> 名称 </th>
+                                                <th style="width: 30%;"> 操作 </th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -191,7 +173,9 @@
                                                     <td> <input id="level_name_{{$level->id}}" name="level_name" value="{{$level->level_name}}" type="text" class="form-control"></td>
                                                     <td>
                                                         <button type="button" class="btn btn-sm blue btn-outline" onclick="updateLevel('4', '{{$level->id}}')">修改</button>
-                                                        <button type="button" class="btn btn-sm red btn-outline" onclick="delLevel('4', '{{$level->id}}')">删除</button>
+                                                        <button type="button" class="btn btn-sm red btn-outline" onclick="delLevel('4', '{{$level->id}}')">
+                                                            <i class="fa fa-trash"></i>
+                                                        </button>
                                                     </td>
                                                 </tr>
                                             @endforeach
@@ -210,24 +194,30 @@
                                     <table class="table table-striped table-bordered table-hover table-checkable order-column">
                                         <thead>
                                             <tr>
-                                                <th> 国家/地区名称 </th>
-                                                <th> 代码 </th>
-                                                <th> 操作 </th>
+                                                <th style="width: 20%;"> 图标 </th>
+                                                <th style="width: 25%;"> 国家/地区名称 </th>
+                                                <th style="width: 25%;"> 代码 </th>
+                                                <th style="width: 30%;"> 操作 </th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                         @if($country_list->isEmpty())
                                             <tr>
-                                                <td colspan="3">暂无数据</td>
+                                                <td colspan="4">暂无数据</td>
                                             </tr>
                                         @else
                                             @foreach($country_list as $country)
                                                 <tr class="odd gradeX" >
+                                                    <td>
+                                                        <img src="{{asset('assets/images/country/' . $country->country_code . '.png')}}" />
+                                                    </td>
                                                     <td> <input id="country_name_{{$country->id}}" name="country_name" value="{{$country->country_name}}" type="text" class="form-control"> </td>
                                                     <td> <input id="country_code_{{$country->id}}" name="country_code" value="{{$country->country_code}}" type="text" class="form-control"></td>
                                                     <td>
                                                         <button type="button" class="btn btn-sm blue btn-outline" onclick="updateCountry('5', '{{$country->id}}')">修改</button>
-                                                        <button type="button" class="btn btn-sm red btn-outline" onclick="delCountry('5', '{{$country->id}}')">删除</button>
+                                                        <button type="button" class="btn btn-sm red btn-outline" onclick="delCountry('5', '{{$country->id}}')">
+                                                            <i class="fa fa-trash"></i>
+                                                        </button>
                                                     </td>
                                                 </tr>
                                             @endforeach

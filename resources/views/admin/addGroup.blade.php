@@ -6,30 +6,15 @@
 @section('title', '控制面板')
 @section('content')
     <!-- BEGIN CONTENT BODY -->
-    <div class="page-content">
-        <!-- BEGIN PAGE BREADCRUMB -->
-        <ul class="page-breadcrumb breadcrumb">
-            <li>
-                <a href="javascript:;">节点管理</a>
-                <i class="fa fa-circle"></i>
-            </li>
-            <li>
-                <a href="{{url('admin/groupList')}}">节点分组</a>
-                <i class="fa fa-circle"></i>
-            </li>
-            <li>
-                <a href="{{url('admin/addGroup')}}">添加节点分组</a>
-            </li>
-        </ul>
-        <!-- END PAGE BREADCRUMB -->
+    <div class="page-content" style="padding-top:0;">
         <!-- BEGIN PAGE BASE CONTENT -->
         <div class="row">
             <div class="col-md-12">
                 <!-- BEGIN PORTLET-->
-                <div class="portlet light form-fit bordered">
+                <div class="portlet light bordered">
                     <div class="portlet-title">
                         <div class="caption">
-                            <span class="caption-subject font-green sbold uppercase">添加节点分组</span>
+                            <span class="caption-subject font-dark sbold uppercase">添加节点分组</span>
                         </div>
                         <div class="actions"></div>
                     </div>
@@ -41,33 +26,33 @@
                             </div>
                         @endif
                         <!-- BEGIN FORM-->
-                        <form action="#" method="post" enctype="multipart/form-data" class="form-horizontal form-bordered" onsubmit="return do_submit();">
+                        <form action="#" method="post" enctype="multipart/form-data" class="form-horizontal" role="form" onsubmit="return do_submit();">
                             <div class="form-body">
                                 <div class="form-group">
                                     <label class="control-label col-md-3">分组名称</label>
-                                    <div class="col-md-6">
-                                        <input type="text" class="form-control" name="name" value="" id="name" placeholder="" autofocus required>
-                                        <input type="hidden" name="_token" value="{{csrf_token()}}">
+                                    <div class="col-md-4">
+                                        <input type="text" class="form-control" name="name" value="" id="name" placeholder="" required>
+                                        <input type="hidden" name="_token" value="{{csrf_token()}}" />
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <label class="control-label col-md-3">可见级别</label>
-                                    <div class="col-md-6">
+                                    <label class="control-label col-md-3">分组级别</label>
+                                    <div class="col-md-4">
                                         <select class="form-control" name="level" id="level" required>
-                                            @if(!$level_list->isEmpty())
-                                                @foreach($level_list as $level)
-                                                    <option value="{{$level['level']}}">{{$level['level_name']}}</option>
+                                            @if(!$levelList->isEmpty())
+                                                @foreach($levelList as $level)
+                                                    <option value="{{$level->level}}">{{$level->level_name}}</option>
                                                 @endforeach
                                             @endif
                                         </select>
-                                        <span class="help-block">对应账号级别可见该分组下的节点（向下兼容）</span>
+                                        <span class="help-block">暂无用</span>
                                     </div>
                                 </div>
                             </div>
                             <div class="form-actions">
                                 <div class="row">
-                                    <div class="col-md-offset-3 col-md-9">
-                                        <button type="submit" class="btn green"> <i class="fa fa-check"></i> 提 交</button>
+                                    <div class="col-md-offset-3 col-md-4">
+                                        <button type="submit" class="btn green">提交</button>
                                     </div>
                                 </div>
                             </div>

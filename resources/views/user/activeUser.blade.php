@@ -7,7 +7,7 @@
 
 <head>
     <meta charset="utf-8" />
-    <title>激活账号</title>
+    <title>{{trans('active.title')}}</title>
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta content="width=device-width, initial-scale=1" name="viewport" />
     <meta content="" name="description" />
@@ -26,7 +26,7 @@
     <!-- END PAGE LEVEL STYLES -->
     <!-- BEGIN THEME LAYOUT STYLES -->
     <!-- END THEME LAYOUT STYLES -->
-    <link rel="shortcut icon" href="favicon.ico" />
+    <link rel="shortcut icon" href="{{asset('favicon.ico')}}" />
 </head>
 
 <body class=" login">
@@ -37,6 +37,35 @@
 <!-- END LOGO -->
 <!-- BEGIN LOGIN -->
 <div class="content">
+    <nav style="padding-bottom: 20px;text-align: center;">
+        @if(app()->getLocale() == 'zh-CN')
+            <a href="{{url('lang', ['locale' => 'zh-tw'])}}">繁體中文</a>
+            <a href="{{url('lang', ['locale' => 'en'])}}">English</a>
+            <a href="{{url('lang', ['locale' => 'ja'])}}">日本語</a>
+            <a href="{{url('lang', ['locale' => 'ko'])}}">한국어</a>
+        @elseif(app()->getLocale() == 'zh-tw')
+            <a href="{{url('lang', ['locale' => 'zh-CN'])}}">简体中文</a>
+            <a href="{{url('lang', ['locale' => 'en'])}}">English</a>
+            <a href="{{url('lang', ['locale' => 'ja'])}}">日本語</a>
+            <a href="{{url('lang', ['locale' => 'ko'])}}">한국어</a>
+        @elseif(app()->getLocale() == 'en')
+            <a href="{{url('lang', ['locale' => 'zh-CN'])}}">简体中文</a>
+            <a href="{{url('lang', ['locale' => 'zh-tw'])}}">繁體中文</a>
+            <a href="{{url('lang', ['locale' => 'ja'])}}">日本語</a>
+            <a href="{{url('lang', ['locale' => 'ko'])}}">한국어</a>
+        @elseif(app()->getLocale() == 'ko')
+            <a href="{{url('lang', ['locale' => 'zh-CN'])}}">简体中文</a>
+            <a href="{{url('lang', ['locale' => 'zh-tw'])}}">繁體中文</a>
+            <a href="{{url('lang', ['locale' => 'en'])}}">English</a>
+            <a href="{{url('lang', ['locale' => 'ja'])}}">日本語</a>
+        @elseif(app()->getLocale() == 'ja')
+            <a href="{{url('lang', ['locale' => 'zh-CN'])}}">简体中文</a>
+            <a href="{{url('lang', ['locale' => 'zh-tw'])}}">繁體中文</a>
+            <a href="{{url('lang', ['locale' => 'en'])}}">English</a>
+            <a href="{{url('lang', ['locale' => 'ko'])}}">한국어</a>
+        @else
+        @endif
+    </nav>
     @if (Session::get('errorMsg'))
         <div class="alert alert-danger">
             <button class="close" data-close="alert"></button>
@@ -53,21 +82,21 @@
     <form class="forget-form" action="{{url('activeUser')}}" method="post" style="display: block;">
         @if($is_active_register)
             <div class="form-title">
-                <span class="form-title">激活账号</span>
+                <span class="form-title">{{trans('active.title')}}</span>
             </div>
             <div class="form-group">
-                <input class="form-control placeholder-no-fix" type="text" autocomplete="off" placeholder="请输入用户名" name="username" value="{{Request::get('username')}}" required />
+                <input class="form-control placeholder-no-fix" type="text" autocomplete="off" placeholder="{{trans('active.username_placeholder')}}" name="username" value="{{Request::get('username')}}" required />
                 <input type="hidden" name="_token" value="{{csrf_token()}}" />
             </div>
         @else
             <div class="alert alert-danger">
-                <span> 系统维护中，如需激活账号请联系管理员 </span>
+                <span> {{trans('active.tips')}} </span>
             </div>
         @endif
         <div class="form-actions">
-            <button type="button" class="btn btn-default" onclick="login()">返 回</button>
+            <button type="button" class="btn btn-default" onclick="login()">{{trans('active.back')}}</button>
             @if($is_active_register)
-                <button type="submit" class="btn red uppercase pull-right">激 活</button>
+                <button type="submit" class="btn red uppercase pull-right">{{trans('active.submit')}}</button>
             @endif
         </div>
     </form>

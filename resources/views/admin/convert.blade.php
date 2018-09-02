@@ -5,18 +5,7 @@
 @section('title', '控制面板')
 @section('content')
     <!-- BEGIN CONTENT BODY -->
-    <div class="page-content">
-        <!-- BEGIN PAGE BREADCRUMB -->
-        <ul class="page-breadcrumb breadcrumb">
-            <li>
-                <a href="{{url('admin')}}">工具箱</a>
-                <i class="fa fa-circle"></i>
-            </li>
-            <li>
-                <a href="{{url('admin/convert')}}">格式转换</a>
-            </li>
-        </ul>
-        <!-- END PAGE BREADCRUMB -->
+    <div class="page-content" style="padding-top:0;">
         <!-- BEGIN PAGE BASE CONTENT -->
         <div class="row">
             <div class="col-md-12">
@@ -24,9 +13,8 @@
                 <div class="portlet light bordered">
                     <div class="portlet-title">
                         <div class="caption font-dark">
-                            <i class="icon-refresh font-dark"></i>
                             <span class="caption-subject bold uppercase"> 格式转换 </span>
-                            <small>SS转SSR</small>
+                            <small>Shadowsocks 转 ShadowsocksR</small>
                         </div>
                     </div>
                     <div class="portlet-body">
@@ -87,10 +75,10 @@
                         </div>
                         <div class="row" style="margin-top:10px;">
                             <div class="col-md-6">
-                                <button class="btn blue btn-block" onclick="do_convert()">转 换</button>
+                                <button class="btn blue btn-block" onclick="doConvert()">转 换</button>
                             </div>
                             <div class="col-md-6">
-                                <button class="btn red btn-block" onclick="do_download()">下 载</button>
+                                <button class="btn red btn-block" onclick="doDownload()">下 载</button>
                             </div>
                         </div>
                     </div>
@@ -107,7 +95,7 @@
 
     <script type="text/javascript">
         // 转换
-        function do_convert() {
+        function doConvert() {
             var _token = '{{csrf_token()}}';
             var method = $('#method').val();
             var transfer_enable = $('#transfer_enable').val();
@@ -145,8 +133,8 @@
         }
 
         // 下载
-        function do_download() {
-            window.location.href = '{{url('admin/download')}}';
+        function doDownload() {
+            window.location.href = '{{url('admin/download?type=1')}}';
         }
     </script>
 @endsection

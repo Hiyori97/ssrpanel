@@ -8,7 +8,7 @@
 
 <head>
     <meta charset="utf-8" />
-    <title>页面不存在</title>
+    <title>{{trans('404.title')}}</title>
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta content="width=device-width, initial-scale=1" name="viewport" />
     <meta content="" name="description" />
@@ -28,21 +28,17 @@
     <!-- END PAGE LEVEL STYLES -->
     <!-- BEGIN THEME LAYOUT STYLES -->
     <!-- END THEME LAYOUT STYLES -->
-    <link rel="shortcut icon" href="favicon.ico" /> </head>
+    <link rel="shortcut icon" href="{{asset('favicon.ico')}}" /> </head>
 <!-- END HEAD -->
 
 <body class="page-500-full-page">
 <div class="row">
     <div class="col-md-12 page-500">
-        <div class="number font-red"> 404 </div>
-        <div class="details">
-            <h3>页面不存在</h3>
-            <p> 如果发现BUG请提交到 <a href="https://github.com/ssrpanel/ssrpanel/issues" target="_blank">Issues</a>
-                <br/> </p>
-            <p>
-                <a href="{{url('admin')}}" class="btn red btn-outline"> 返 回 </a>
-                <br> </p>
-        </div>
+        <h3>{{trans('404.title')}}</h3>
+        <p><br></p>
+        <div class="number font-red"> <img src="{{asset('assets/images/404.gif')}}" /> </div>
+        <p><br></p>
+        <a href="{{url('/')}}" class="btn default"> {{trans('404.back')}} </a>
     </div>
 </div>
 <!--[if lt IE 9]>
@@ -60,6 +56,17 @@
 <!-- END CORE PLUGINS -->
 <!-- BEGIN THEME GLOBAL SCRIPTS -->
 <script src="/assets/global/scripts/app.min.js" type="text/javascript"></script>
+
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-122312249-1"></script>
+<script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'UA-122312249-1');
+</script>
+
 <!-- END THEME GLOBAL SCRIPTS -->
 <!-- BEGIN THEME LAYOUT SCRIPTS -->
 <!-- END THEME LAYOUT SCRIPTS -->

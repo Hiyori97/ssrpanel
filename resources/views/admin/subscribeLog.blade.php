@@ -7,18 +7,7 @@
 @section('title', '控制面板')
 @section('content')
     <!-- BEGIN CONTENT BODY -->
-    <div class="page-content">
-        <!-- BEGIN PAGE BREADCRUMB -->
-        <ul class="page-breadcrumb breadcrumb">
-            <li>
-                <a href="{{url('admin')}}">工具箱</a>
-                <i class="fa fa-circle"></i>
-            </li>
-            <li>
-                <a href="{{url('admin/subscribeLog')}}">订阅请求日志</a>
-            </li>
-        </ul>
-        <!-- END PAGE BREADCRUMB -->
+    <div class="page-content" style="padding-top:0;">
         <!-- BEGIN PAGE BASE CONTENT -->
         <div class="row">
             <div class="col-md-12">
@@ -26,60 +15,57 @@
                 <div class="portlet light bordered">
                     <div class="portlet-title">
                         <div class="caption font-dark">
-                            <i class="icon-list font-dark"></i>
                             <span class="caption-subject bold uppercase">订阅请求日志</span>
                         </div>
                     </div>
                     <div class="portlet-body">
                         <div class="row">
                             <div class="col-md-2 col-sm-2">
-                                <input type="text" class="col-md-4 form-control input-sm" name="user_id" value="{{Request::get('user_id')}}" id="user_id" placeholder="用户ID" onkeydown="if(event.keyCode==13){do_search();}">
+                                <input type="text" class="col-md-4 form-control input-sm" name="user_id" value="{{Request::get('user_id')}}" id="user_id" placeholder="用户ID" onkeydown="if(event.keyCode==13){doSearch();}">
                             </div>
                             <div class="col-md-2 col-sm-2">
-                                <input type="text" class="col-md-4 form-control input-sm" name="username" value="{{Request::get('username')}}" id="username" placeholder="用户名" onkeydown="if(event.keyCode==13){do_search();}">
+                                <input type="text" class="col-md-4 form-control input-sm" name="username" value="{{Request::get('username')}}" id="username" placeholder="用户名" onkeydown="if(event.keyCode==13){doSearch();}">
                             </div>
                             <div class="col-md-2 col-sm-2">
-                                <button type="button" class="btn btn-sm blue" onclick="do_search();">查询</button>
-                                <button type="button" class="btn btn-sm grey" onclick="do_reset();">重置</button>
+                                <button type="button" class="btn btn-sm blue" onclick="doSearch();">查询</button>
+                                <button type="button" class="btn btn-sm grey" onclick="doReset();">重置</button>
                             </div>
                         </div>
-                        <div class="table-scrollable">
-                            <table class="table table-striped table-bordered table-hover table-checkable order-column">
+                        <div class="table-scrollable table-scrollable-borderless">
+                            <table class="table table-hover table-light">
                                 <thead>
                                 <tr>
-                                    <th> ID </th>
+                                    <th> # </th>
                                     <th> 用户 </th>
-                                    <th> 唯一识别码 </th>
+                                    <th> 识别码 </th>
                                     <th> 请求次数 </th>
                                     <th> 最后请求时间 </th>
-                                    <th> 异常 </th>
+                                    <th> 封禁时间 </th>
+                                    <th> 封禁理由 </th>
                                     <th> 操作 </th>
                                 </tr>
                                 </thead>
                                 <tbody>
                                     @if($subscribeList->isEmpty())
                                         <tr>
-                                            <td colspan="7">暂无数据</td>
+                                            <td colspan="8" style="text-align: center;">暂无数据</td>
                                         </tr>
                                     @else
                                         @foreach($subscribeList as $subscribe)
                                             <tr class="odd gradeX">
                                                 <td> {{$subscribe->id}} </td>
-                                                <td> {{$subscribe->user->username}} </td>
+                                                <td> {{empty($subscribe->user) ? '【账号已删除】' : $subscribe->user->username}} </td>
                                                 <td> {{$subscribe->code}} </td>
                                                 <td> {{$subscribe->times}} </td>
                                                 <td> {{$subscribe->updated_at}} </td>
-                                                <td>
-                                                    @if($subscribe->isWarning)
-                                                        <div class="label label-danger">可能公开</div>
-                                                    @endif
-                                                </td>
+                                                <td> {{$subscribe->ban_time > 0 ? date('Y-m-d H:i:s') : ''}} </td>
+                                                <td> {{$subscribe->ban_desc}} </td>
                                                 <td>
                                                     @if($subscribe->status == 0)
-                                                        <button type="button" class="btn btn-sm green btn-outline" onclick="set_status('{{$subscribe->id}}', 1)">启用</button>
+                                                        <button type="button" class="btn btn-sm green btn-outline" onclick="setStatus('{{$subscribe->id}}', 1)">启用</button>
                                                     @endif
                                                     @if($subscribe->status == 1)
-                                                        <button type="button" class="btn btn-sm red btn-outline" onclick="set_status('{{$subscribe->id}}', 0)">禁用</button>
+                                                        <button type="button" class="btn btn-sm red btn-outline" onclick="setStatus('{{$subscribe->id}}', 0)">禁用</button>
                                                     @endif
                                                 </td>
                                             </tr>
@@ -112,7 +98,7 @@
 
     <script type="text/javascript">
         // 搜索
-        function do_search() {
+        function doSearch() {
             var user_id = $("#user_id").val();
             var username = $("#username").val();
 
@@ -120,12 +106,12 @@
         }
 
         // 重置
-        function do_reset() {
+        function doReset() {
             window.location.href = '{{url('admin/subscribeLog')}}';
         }
 
         // 启用禁用用户的订阅
-        function set_status(id, status) {
+        function setStatus(id, status) {
             $.post("{{url('admin/setSubscribeStatus')}}", {_token:'{{csrf_token()}}', id:id, status:status}, function(ret) {
                 layer.msg(ret.message, {time:1000}, function() {
                     window.location.reload();

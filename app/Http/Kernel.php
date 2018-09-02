@@ -31,6 +31,7 @@ class Kernel extends HttpKernel
             \Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class,
             \Illuminate\Session\Middleware\StartSession::class,
             // \Illuminate\Session\Middleware\AuthenticateSession::class,
+            \App\Http\Middleware\SetLocale::class,
             \Illuminate\View\Middleware\ShareErrorsFromSession::class,
             \App\Http\Middleware\VerifyCsrfToken::class,
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
@@ -57,6 +58,10 @@ class Kernel extends HttpKernel
         'guest' => \App\Http\Middleware\RedirectIfAuthenticated::class,
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'admin' => \App\Http\Middleware\Admin::class,
-        'user' => \App\Http\Middleware\User::class
+        'user' => \App\Http\Middleware\User::class,
+        'forbidden' => \App\Http\Middleware\Forbidden::class,
+        'affiliate' => \App\Http\Middleware\Affiliate::class,
+        'Muv2' => \App\Http\Middleware\Muv2::class
+
     ];
 }

@@ -7,18 +7,7 @@
 @section('title', '控制面板')
 @section('content')
     <!-- BEGIN CONTENT BODY -->
-    <div class="page-content">
-        <!-- BEGIN PAGE BREADCRUMB -->
-        <ul class="page-breadcrumb breadcrumb">
-            <li>
-                <a href="{{url('admin')}}">账号管理</a>
-                <i class="fa fa-circle"></i>
-            </li>
-            <li>
-                <a href="{{url('admin/userBalanceLogList')}}">余额变动日志</a>
-            </li>
-        </ul>
-        <!-- END PAGE BREADCRUMB -->
+    <div class="page-content" style="padding-top:0;">
         <!-- BEGIN PAGE BASE CONTENT -->
         <div class="row">
             <div class="col-md-12">
@@ -26,8 +15,7 @@
                 <div class="portlet light bordered">
                     <div class="portlet-title">
                         <div class="caption font-dark">
-                            <i class="icon-speedometer font-dark"></i>
-                            <span class="caption-subject bold uppercase"> 余额变动日志</span>
+                            <span class="caption-subject bold uppercase"> 余额变动记录 </span>
                         </div>
                     </div>
                     <div class="portlet-body">
@@ -40,12 +28,12 @@
                                 <button type="button" class="btn btn-sm grey" onclick="do_reset();">重置</button>
                             </div>
                         </div>
-                        <div class="table-scrollable">
-                            <table class="table table-striped table-bordered table-hover table-checkable order-column">
+                        <div class="table-scrollable table-scrollable-borderless">
+                            <table class="table table-hover table-light">
                                 <thead>
                                 <tr>
-                                    <th> ID </th>
-                                    <th> 用户 </th>
+                                    <th> # </th>
+                                    <th> 用户名 </th>
                                     <th> 订单ID </th>
                                     <th> 操作前余额 </th>
                                     <th> 发生金额 </th>
@@ -57,13 +45,13 @@
                                 <tbody>
                                     @if($list->isEmpty())
                                         <tr>
-                                            <td colspan="8">暂无数据</td>
+                                            <td colspan="8" style="text-align: center;">暂无数据</td>
                                         </tr>
                                     @else
                                         @foreach($list as $vo)
                                             <tr class="odd gradeX">
                                                 <td> {{$vo->id}} </td>
-                                                <td> {{empty($vo->user) ? '【用户已删除】' : $vo->user->username}} </td>
+                                                <td> {{empty($vo->user) ? '【账号已删除】' : $vo->user->username}} </td>
                                                 <td> {{$vo->order_id}} </td>
                                                 <td> {{$vo->before}} </td>
                                                 <td> {{$vo->amount}} </td>

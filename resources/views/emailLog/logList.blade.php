@@ -12,18 +12,7 @@
 @section('title', '控制面板')
 @section('content')
     <!-- BEGIN CONTENT BODY -->
-    <div class="page-content">
-        <!-- BEGIN PAGE BREADCRUMB -->
-        <ul class="page-breadcrumb breadcrumb">
-            <li>
-                <a href="{{url('admin')}}">工具箱</a>
-                <i class="fa fa-circle"></i>
-            </li>
-            <li>
-                <a href="{{url('emailLog/list')}}">邮件发送记录</a>
-            </li>
-        </ul>
-        <!-- END PAGE BREADCRUMB -->
+    <div class="page-content" style="padding-top:0;">
         <!-- BEGIN PAGE BASE CONTENT -->
         <div class="row">
             <div class="col-md-12">
@@ -31,16 +20,15 @@
                 <div class="portlet light bordered">
                     <div class="portlet-title">
                         <div class="caption font-dark">
-                            <i class="icon-list font-dark"></i>
-                            <span class="caption-subject bold uppercase"> 邮件发送记录 </span>
+                            <span class="caption-subject bold uppercase"> 邮件投递记录 </span>
                         </div>
                     </div>
                     <div class="portlet-body">
-                        <div class="table-scrollable">
-                            <table class="table table-striped table-bordered table-hover table-checkable order-column">
+                        <div class="table-scrollable table-scrollable-borderless">
+                            <table class="table table-hover table-light">
                                 <thead>
                                 <tr>
-                                    <th> ID </th>
+                                    <th> # </th>
                                     <th> 接收者 </th>
                                     <th> 邮件类型 </th>
                                     <th> 投递内容 </th>
@@ -51,13 +39,13 @@
                                 <tbody>
                                 @if($list->isEmpty())
                                     <tr>
-                                        <td colspan="6">暂无数据</td>
+                                        <td colspan="6" style="text-align: center;">暂无数据</td>
                                     </tr>
                                 @else
                                     @foreach($list as $vo)
                                         <tr class="odd gradeX">
                                             <td> {{$vo->id}} </td>
-                                            <td> {{empty($vo->user) ? '【该用户已删除】' : $vo->user->username}} </td>
+                                            <td> {{empty($vo->user) ? '【账号已删除】' : $vo->user->username}} </td>
                                             <td> {{$vo->title}} </td>
                                             <td> {{$vo->content}} </td>
                                             <td> {{$vo->created_at}} </td>

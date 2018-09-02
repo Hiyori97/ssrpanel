@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 /**
  * 国家/地区
  * Class Country
+ *
  * @package App\Http\Models
  */
 class Country extends Model
@@ -14,8 +15,4 @@ class Country extends Model
     protected $table = 'country';
     protected $primaryKey = 'id';
     public $timestamps = false;
-    protected $fillable = [
-        'country_name',
-        'country_code'
-    ];
 }

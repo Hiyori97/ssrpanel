@@ -7,20 +7,16 @@ use Illuminate\Database\Eloquent\Model;
 /**
  * 验证
  * Class Verify
+ *
  * @package App\Http\Models
  */
 class Verify extends Model
 {
     protected $table = 'verify';
     protected $primaryKey = 'id';
-    protected $fillable = [
-        'user_id',
-        'username',
-        'token',
-        'status'
-    ];
 
-    public function User() {
+    public function User()
+    {
         return $this->hasOne(User::class, 'id', 'user_id');
     }
 

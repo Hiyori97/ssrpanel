@@ -7,7 +7,7 @@
 
 <head>
     <meta charset="utf-8" />
-    <title>激活账号</title>
+    <title>{{trans('active.title')}}</title>
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta content="width=device-width, initial-scale=1" name="viewport" />
     <meta content="" name="description" />
@@ -26,10 +26,10 @@
     <!-- END PAGE LEVEL STYLES -->
     <!-- BEGIN THEME LAYOUT STYLES -->
     <!-- END THEME LAYOUT STYLES -->
-    <link rel="shortcut icon" href="favicon.ico" />
+    <link rel="shortcut icon" href="{{asset('favicon.ico')}}" />
 </head>
 
-<body class=" login">
+<body class="login">
 <!-- BEGIN LOGO -->
 <div class="logo">
     <a href="javascript:;"> <img src="/assets/images/home_logo.png" alt="" /> </a>
@@ -37,6 +37,35 @@
 <!-- END LOGO -->
 <!-- BEGIN LOGIN -->
 <div class="content">
+    <nav style="padding-bottom: 20px;text-align: center;">
+        @if(app()->getLocale() == 'zh-CN')
+            <a href="{{url('lang', ['locale' => 'zh-tw'])}}">繁體中文</a>
+            <a href="{{url('lang', ['locale' => 'en'])}}">English</a>
+            <a href="{{url('lang', ['locale' => 'ja'])}}">日本語</a>
+            <a href="{{url('lang', ['locale' => 'ko'])}}">한국어</a>
+        @elseif(app()->getLocale() == 'zh-tw')
+            <a href="{{url('lang', ['locale' => 'zh-CN'])}}">简体中文</a>
+            <a href="{{url('lang', ['locale' => 'en'])}}">English</a>
+            <a href="{{url('lang', ['locale' => 'ja'])}}">日本語</a>
+            <a href="{{url('lang', ['locale' => 'ko'])}}">한국어</a>
+        @elseif(app()->getLocale() == 'en')
+            <a href="{{url('lang', ['locale' => 'zh-CN'])}}">简体中文</a>
+            <a href="{{url('lang', ['locale' => 'zh-tw'])}}">繁體中文</a>
+            <a href="{{url('lang', ['locale' => 'ja'])}}">日本語</a>
+            <a href="{{url('lang', ['locale' => 'ko'])}}">한국어</a>
+        @elseif(app()->getLocale() == 'ko')
+            <a href="{{url('lang', ['locale' => 'zh-CN'])}}">简体中文</a>
+            <a href="{{url('lang', ['locale' => 'zh-tw'])}}">繁體中文</a>
+            <a href="{{url('lang', ['locale' => 'en'])}}">English</a>
+            <a href="{{url('lang', ['locale' => 'ja'])}}">日本語</a>
+        @elseif(app()->getLocale() == 'ja')
+            <a href="{{url('lang', ['locale' => 'zh-CN'])}}">简体中文</a>
+            <a href="{{url('lang', ['locale' => 'zh-tw'])}}">繁體中文</a>
+            <a href="{{url('lang', ['locale' => 'en'])}}">English</a>
+            <a href="{{url('lang', ['locale' => 'ko'])}}">한국어</a>
+        @else
+        @endif
+    </nav>
     @if(Session::get('errorMsg'))
         <div class="alert alert-danger">
             <span> {{Session::get('errorMsg')}} </span>
@@ -50,7 +79,7 @@
     <!-- BEGIN REGISTRATION FORM -->
     <form class="register-form" action="{{url(Request::getRequestUri())}}" method="post" style="display: block;">
         <div class="form-actions">
-            <button type="button" class="btn btn-default" onclick="login()">登 录</button>
+            <button type="button" class="btn btn-default" onclick="login()">{{trans('active.login_button')}}</button>
         </div>
     </form>
     <!-- END REGISTRATION FORM -->

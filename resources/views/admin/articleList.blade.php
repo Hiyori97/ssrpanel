@@ -7,15 +7,7 @@
 @section('title', '控制面板')
 @section('content')
     <!-- BEGIN CONTENT BODY -->
-    <div class="page-content">
-        <!-- BEGIN PAGE BREADCRUMB -->
-        <ul class="page-breadcrumb breadcrumb">
-            <li>
-                <a href="{{url('admin/articleList')}}">文章管理</a>
-                <i class="fa fa-circle"></i>
-            </li>
-        </ul>
-        <!-- END PAGE BREADCRUMB -->
+    <div class="page-content" style="padding-top:0;">
         <!-- BEGIN PAGE BASE CONTENT -->
         <div class="row">
             <div class="col-md-12">
@@ -23,46 +15,47 @@
                 <div class="portlet light bordered">
                     <div class="portlet-title">
                         <div class="caption font-dark">
-                            <i class="icon-docs font-dark"></i>
                             <span class="caption-subject bold uppercase"> 文章列表 </span>
                         </div>
                         <div class="actions">
                             <div class="btn-group">
-                                <button class="btn sbold blue" onclick="addArticle()"> 新增
-                                    <i class="fa fa-plus"></i>
-                                </button>
+                                <button class="btn sbold blue" onclick="addArticle()"> 添加文章 </button>
                             </div>
                         </div>
                     </div>
                     <div class="portlet-body">
-                        <div class="table-scrollable">
-                            <table class="table table-striped table-bordered table-hover table-checkable order-column" id="sample_1">
+                        <div class="table-scrollable table-scrollable-borderless">
+                            <table class="table table-hover table-light">
                                 <thead>
                                 <tr>
-                                    <th> ID </th>
-                                    <th> 标题 </th>
+                                    <th> # </th>
                                     <th> 类型 </th>
+                                    <th> 标题 </th>
                                     <th> 排序 </th>
                                     <th> 发布日期 </th>
                                     <th> 操作 </th>
                                 </tr>
                                 </thead>
                                 <tbody>
-                                @if($articleList->isEmpty())
+                                @if($list->isEmpty())
                                     <tr>
-                                        <td colspan="6">暂无数据</td>
+                                        <td colspan="6" style="text-align: center;">暂无数据</td>
                                     </tr>
                                 @else
-                                    @foreach($articleList as $article)
+                                    @foreach($list as $vo)
                                         <tr class="odd gradeX">
-                                            <td> {{$article->id}} </td>
-                                            <td> <a href="{{url('user/article?id=' . $article->id)}}" target="_blank"> {{$article->title}} </a> </td>
-                                            <td> {{$article->type == '1' ? '文章' : '公告'}} </td>
-                                            <td> {{$article->sort}} </td>
-                                            <td> {{$article->created_at}} </td>
+                                            <td> {{$vo->id}} </td>
+                                            <td> {{$vo->type == '1' ? '文章' : '公告'}} </td>
+                                            <td> <a href="{{url('article?id=' . $vo->id)}}" target="_blank"> {{str_limit($vo->title, 80)}} </a> </td>
+                                            <td> {{$vo->sort}} </td>
+                                            <td> {{$vo->created_at}} </td>
                                             <td>
-                                                <button type="button" class="btn btn-sm blue btn-outline" onclick="editArticle('{{$article->id}}')">编辑</button>
-                                                <button type="button" class="btn btn-sm red btn-outline" onclick="delArticle('{{$article->id}}')">删除</button>
+                                                <button type="button" class="btn btn-sm blue btn-outline" onclick="editArticle('{{$vo->id}}')">
+                                                    <i class="fa fa-pencil"></i>
+                                                </button>
+                                                <button type="button" class="btn btn-sm red btn-outline" onclick="delArticle('{{$vo->id}}')">
+                                                    <i class="fa fa-trash"></i>
+                                                </button>
                                             </td>
                                         </tr>
                                     @endforeach
@@ -72,11 +65,11 @@
                         </div>
                         <div class="row">
                             <div class="col-md-4 col-sm-4">
-                                <div class="dataTables_info" role="status" aria-live="polite">共 {{$articleList->total()}} 篇文章</div>
+                                <div class="dataTables_info" role="status" aria-live="polite">共 {{$list->total()}} 篇文章</div>
                             </div>
                             <div class="col-md-8 col-sm-8">
                                 <div class="dataTables_paginate paging_bootstrap_full_number pull-right">
-                                    {{ $articleList->links() }}
+                                    {{ $list->links() }}
                                 </div>
                             </div>
                         </div>

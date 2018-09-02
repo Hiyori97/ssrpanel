@@ -7,18 +7,7 @@
 @section('title', '控制面板')
 @section('content')
     <!-- BEGIN CONTENT BODY -->
-    <div class="page-content">
-        <!-- BEGIN PAGE BREADCRUMB -->
-        <ul class="page-breadcrumb breadcrumb">
-            <li>
-                <a href="{{url('admin')}}">工具箱</a>
-                <i class="fa fa-circle"></i>
-            </li>
-            <li>
-                <a href="{{url('admin/trafficLog')}}">流量日志</a>
-            </li>
-        </ul>
-        <!-- END PAGE BREADCRUMB -->
+    <div class="page-content" style="padding-top:0;">
         <!-- BEGIN PAGE BASE CONTENT -->
         <div class="row">
             <div class="col-md-12">
@@ -26,7 +15,6 @@
                 <div class="portlet light bordered">
                     <div class="portlet-title">
                         <div class="caption font-dark">
-                            <i class="icon-speedometer font-dark"></i>
                             <span class="caption-subject bold uppercase"> 流量日志</span>
                         </div>
                     </div>
@@ -46,11 +34,11 @@
                                 <button type="button" class="btn btn-sm grey" onclick="do_reset();">重置</button>
                             </div>
                         </div>
-                        <div class="table-scrollable">
-                            <table class="table table-striped table-bordered table-hover table-checkable order-column">
+                        <div class="table-scrollable table-scrollable-borderless">
+                            <table class="table table-hover table-light">
                                 <thead>
                                 <tr>
-                                    <th> ID </th>
+                                    <th> # </th>
                                     <th> 用户 </th>
                                     <th> 节点 </th>
                                     <th> 流量比例 </th>
@@ -63,13 +51,13 @@
                                 <tbody>
                                     @if($trafficLogList->isEmpty())
                                         <tr>
-                                            <td colspan="8">暂无数据</td>
+                                            <td colspan="8" style="text-align: center;">暂无数据</td>
                                         </tr>
                                     @else
                                         @foreach($trafficLogList as $trafficLog)
                                             <tr class="odd gradeX">
                                                 <td> {{$trafficLog->id}} </td>
-                                                <td> <a href="{{url('admin/userList?port=') . $trafficLog->user->port}}" target="_blank"> <span class="label label-info"> {{$trafficLog->user->username}} </span> </a> </td>
+                                                <td> <a href="{{url('admin/userList?username=') . $trafficLog->user->username}}" target="_blank"> <span class="label label-info"> {{$trafficLog->user->username}} </span> </a> </td>
                                                 <td> {{$trafficLog->ssnode->name}} </td>
                                                 <td> {{$trafficLog->rate}} </td>
                                                 <td> {{$trafficLog->u}} </td>

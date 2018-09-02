@@ -1,7 +1,12 @@
 @extends('user.layouts')
 
 @section('css')
+    <link href="/assets/global/plugins/fancybox/source/jquery.fancybox.css" rel="stylesheet" type="text/css" />
     <style type="text/css">
+        .fancybox > img {
+            width: 75px;
+            height: 75px;
+        }
         .ticker {
             background-color: #fff;
             margin-bottom: 20px;
@@ -17,16 +22,8 @@
             padding: 15px;
         }
     </style>
-
-    <style type="text/css">
-        #lottery{width:574px;height:584px;margin:20px auto;background:url(/assets/images/bg.jpg) no-repeat;padding:50px 55px;}
-        #lottery table td{width:142px;height:142px;text-align:center;vertical-align:middle;font-size:24px;color:#333;font-index:-999}
-        #lottery table td a{width:284px;height:284px;line-height:150px;display:block;text-decoration:none;}
-        #lottery table td.active{background-color:#ea0000;}
-
-    </style>
 @endsection
-@section('title', '控制面板')
+@section('title', trans('home.panel'))
 @section('content')
     <!-- BEGIN CONTENT BODY -->
     <div class="page-content" style="padding-top:0;">
@@ -37,95 +34,203 @@
                 {{Session::get('successMsg')}}
             </div>
         @endif
-        @if($notice)
-            <div class="alert alert-success">
-                <i class="fa fa-bell-o"></i>
-                <button class="close" data-close="alert"></button>
-                <a href="{{url('user/article?id=') . $notice->id}}" class="alert-link" target="_blank"> {{$notice->title}} </a>
-            </div>
-        @endif
         <div class="row">
             <div class="col-md-8">
-                <div class="alert alert-danger">
-                    <strong>结算比例：</strong> 1表示用100M就结算100M，0.1表示用100M结算10M，5表示用100M结算500M。
-                    <button class="btn btn-sm red" onclick="subscribe()"> 订阅节点 </button>
-                </div>
-                <div class="row widget-row">
-                    @if(!$nodeList->isEmpty())
-                        @foreach($nodeList as $node)
-                            <div class="col-md-4">
-                                <div class="widget-thumb widget-bg-color-white text-uppercase margin-bottom-20 ">
-                                    <h4 class="widget-thumb-heading">{{$node->name}}</h4>
-                                    <div class="widget-thumb-wrap">
-                                        <div style="float:left;display: inline-block;padding-right:15px;">
-                                            @if($node->country_code)
-                                                <img src="{{asset('assets/images/country/' . $node->country_code . '.png')}}"/>
-                                            @else
-                                                <img src="{{asset('/assets/images/country/un.png')}}"/>
-                                            @endif
-                                        </div>
-                                        <div class="widget-thumb-body">
-                                            <span class="widget-thumb-subtitle"><a data-toggle="modal" href="#txt_{{$node->id}}">{{$node->server}}</a></span>
-                                            <span class="widget-thumb-body-stat">
-                                                <a class="btn btn-sm green btn-outline" href="javascript:show('{{$node->ssr_scheme . '<br><br>' . $node->ss_scheme}}');"> <i class="fa fa-paper-plane"></i> </a>
-                                                <a class="btn btn-sm green btn-outline" data-toggle="modal" href="#qrcode_{{$node->id}}"> <i class="fa fa-qrcode"></i> </a>
-                                            </span>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="portlet light">
+                            <div class="portlet-title">
+                                <div class="caption">
+                                    <span class="caption-subject font-blue bold">{{trans('home.subscribe_address')}}</span>
+                                </div>
+                            </div>
+                            <div class="portlet-body">
+                                <div class="mt-clipboard-container" style="padding-top:0px;">
+                                    <div class="alert alert-danger">
+                                        <p> {{trans('home.subscribe_warning')}} </p>
+                                    </div>
+                                    @if($subscribe_status)
+                                        <input type="text" id="mt-target-1" class="form-control" value="{{$link}}" />
+                                        <a href="javascript:exchangeSubscribe();" class="btn green">
+                                            {{trans('home.exchange_subscribe')}}
+                                        </a>
+                                        <a href="javascript:;" class="btn blue mt-clipboard" data-clipboard-action="copy" data-clipboard-target="#mt-target-1">
+                                            {{trans('home.copy_subscribe_address')}}
+                                        </a>
+                                    @else
+                                        <h3>{{trans('home.subscribe_baned')}}</h3>
+                                    @endif
+
+                                    <div class="tabbable-line">
+                                        <ul class="nav nav-tabs ">
+                                            <li class="active">
+                                                <a href="#tools1" data-toggle="tab"> <i class="fa fa-apple"></i> Mac </a>
+                                            </li>
+                                            <li>
+                                                <a href="#tools2" data-toggle="tab"> <i class="fa fa-windows"></i> Windows </a>
+                                            </li>
+                                            <li>
+                                                <a href="#tools3" data-toggle="tab"> <i class="fa fa-linux"></i> Linux </a>
+                                            </li>
+                                            <li>
+                                                <a href="#tools4" data-toggle="tab"> <i class="fa fa-apple"></i> iOS </a>
+                                            </li>
+                                            <li>
+                                                <a href="#tools5" data-toggle="tab"> <i class="fa fa-android"></i> Android </a>
+                                            </li>
+                                        </ul>
+                                        <div class="tab-content" style="font-size:16px;">
+                                            <div class="tab-pane active" id="tools1">
+                                                <ol>
+                                                    <li> <a href="#" target="_blank">点击此处</a>下载客户端并启动 </li>
+                                                    <li> 单击状态栏小飞机，找到服务器->编辑订阅，复制黏贴订阅地址 </li>
+                                                    <li> 点击服务器->手动更新订阅，更新您的服务信息 </li>
+                                                    <li> 更新成功后，请在服务器菜单处选择线路，并点击打开ShadowsocksR </li>
+                                                    <li> 单击小飞机，选择PAC自动模式 </li>
+                                                </ol>
+                                            </div>
+                                            <div class="tab-pane" id="tools2">
+                                                <ol>
+                                                    <li> <a href="#" target="_blank">点击此处</a>下载客户端并启动 </li>
+                                                    <li> 单击状态栏小飞机，找到服务器->订阅->订阅设置，复制黏贴订阅地址 </li>
+                                                    <li> 点击状态栏小飞机，找到模式，选中PAC </li>
+                                                    <li> 点击状态栏小飞机，找到PAC，选中更新PAC为GFWList </li>
+                                                </ol>
+                                            </div>
+                                            <div class="tab-pane" id="tools3">
+                                                <ol>
+                                                    <li> <a href="#" target="_blank">点击此处</a>下载客户端并启动 </li>
+                                                    <li> 单击状态栏小飞机，找到服务器->编辑订阅，复制黏贴订阅地址 </li>
+                                                    <li> 更新订阅设置即可 </li>
+                                                </ol>
+                                            </div>
+                                            <div class="tab-pane" id="tools4">
+                                                <ol>
+                                                    <li> 请从站长处获取App Store美区ID及教程 </li>
+                                                </ol>
+                                            </div>
+                                            <div class="tab-pane" id="tools5">
+                                                <ol>
+                                                    <li> <a href="#" target="_blank">点击此处</a>下载客户端并启动 </li>
+                                                    <li> 单击左上角的shadowsocksR进入配置文件页，点击右下角的“+”号，点击“添加/升级SSR订阅”，填入订阅信息并保存 </li>
+                                                    <li> 选中任意一个节点，返回软件首页 </li>
+                                                    <li> 在软件首页处找到“路由”选项，并将其改为“绕过局域网及中国大陆地址” </li>
+                                                    <li> 点击右上角的小飞机图标进行连接，提示是否添加（或创建）VPN连接，点同意（或允许） </li>
+                                                </ol>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                        @endforeach
-                    @endif
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="portlet box red">
-                    <div class="portlet-title">
-                        <div class="caption">账号信息</div>
-                        <div class="tools">
-                            <a href="javascript:;" class="collapse" data-original-title="" title="折叠"> </a>
                         </div>
                     </div>
-                    <div class="portlet-body">
-                        <p class="text-muted"> 等级：{{$info['levelName']}} </p>
-                        <p class="text-muted">
-                            余额：{{$info['balance']}}
-                            <span class="badge badge-danger">
-                                <a href="javascript:;" data-toggle="modal" data-target="#charge_modal" style="color:#FFF;">充值</a>
-                            </span>
-                            &ensp;&ensp;积分：{{$info['score']}}
-                            <span class="badge badge-danger">
-                                <a href="javascript:;" data-toggle="modal" data-target="#excharge_modal" style="color:#FFF;">兑换</a>
-                            </span>
-                        </p>
-                        <p class="text-muted"> 账号到期：{{date('Y-m-d 0:0:0') > $info['expire_time'] ? '已过期' : $info['expire_time']}} </p>
-                        <p class="text-muted"> 最后使用：{{empty($info['t']) ? '从未使用' : date('Y-m-d H:i:s', $info['t'])}} </p>
-                        <p class="text-muted"> 最后登录：{{empty($info['last_login']) ? '未登录' : date('Y-m-d H:i:s', $info['last_login'])}} </p>
-                        <p class="text-muted">
-                            已用流量：{{$info['usedTransfer']}} （{{$info['totalTransfer']}}）
-                            <div class="progress progress-striped active" style="margin-bottom:0;" title="共有流量{{$info['totalTransfer']}}，已用{{$info['usedTransfer']}}">
-                                <div class="progress-bar progress-bar-danger" role="progressbar" aria-valuenow="{{$info['usedPercent'] * 100}}" aria-valuemin="0" aria-valuemax="100" style="width: {{$info['usedPercent'] * 100}}%">
-                                    <span class="sr-only"> {{$info['usedTransfer']}} / {{$info['totalTransfer']}} </span>
+                </div>
+
+                @if(!$nodeList->isEmpty())
+                <div class="row widget-row">
+                    <div class="col-md-12">
+                        <div class="portlet light bordered">
+                            <div class="portlet-body">
+                                <div class="tab-content">
+                                    <div class="tab-pane active">
+                                        <div class="mt-comments">
+                                            @foreach($nodeList as $node)
+                                                <div class="mt-comment">
+                                                    <div class="mt-comment-img" style="width:auto;">
+                                                        @if($node->country_code)
+                                                            <img src="{{asset('assets/images/country/' . $node->country_code . '.png')}}"/>
+                                                        @else
+                                                            <img src="{{asset('/assets/images/country/un.png')}}"/>
+                                                        @endif
+                                                    </div>
+                                                    <div class="mt-comment-body">
+                                                        <div class="mt-comment-info">
+                                                            <span class="mt-comment-author">{{$node->name}} - {{$node->server ? $node->server : $node->ip}}</span>
+                                                            <span class="mt-comment-date">
+                                                                @if(!$node->online_status)
+                                                                    <span class="badge badge-danger">维护中</span>
+                                                                @endif
+                                                            </span>
+                                                        </div>
+                                                        <div class="mt-comment-text"> {{$node->desc}} </div>
+                                                        <div class="mt-comment-details">
+                                                            <span class="mt-comment-status mt-comment-status-pending">
+                                                                @if($node->labels)
+                                                                    @foreach($node->labels as $vo)
+                                                                        <span class="badge badge-info">{{$vo->labelInfo->name}}</span>
+                                                                    @endforeach
+                                                                @endif
+                                                            </span>
+                                                            <ul class="mt-comment-actions" style="display: block;">
+                                                                <li>
+                                                                    <a class="btn btn-sm green btn-outline" data-toggle="modal" href="#link_{{$node->id}}"> <i class="fa fa-paper-plane"></i> </a>
+                                                                </li>
+                                                                <li>
+                                                                    <a class="btn btn-sm green btn-outline" data-toggle="modal" href="#qrcode_{{$node->id}}"> <i class="fa fa-qrcode"></i> </a>
+                                                                </li>
+                                                            </ul>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            @endforeach
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-                        </p>
-                    </div>
-                </div>
-                <div class="portlet box blue">
-                    <div class="portlet-title">
-                        <div class="caption">文章</div>
-                        <div class="tools">
-                            <a href="javascript:;" class="collapse" data-original-title="" title="折叠"> </a>
                         </div>
                     </div>
-                    <div class="portlet-body">
-                        @foreach($articleList as $k => $article)
-                            <p class="text-muted">
-                                [{{date('m/d', strtotime($article->created_at))}}] <a href="{{url('user/article?id=') . $article->id}}" target="_blank"> {{$article->title}} </a>
-                            </p>
-                        @endforeach
-                    </div>
                 </div>
+                @endif
+            </div>
+            <div class="col-md-4" style="padding-left: 3px;">
+                <ul class="list-group">
+                    <li class="list-group-item">
+                        {{trans('home.account_status')}}：{{$info['enable'] ? trans('home.enabled') : trans('home.disabled') }}
+                    </li>
+                    @if($login_add_score)
+                        <li class="list-group-item">
+                            {{trans('home.account_score')}}：{{$info['score']}}
+                            <span class="badge badge-info">
+                            <a href="javascript:;" data-toggle="modal" data-target="#exchange_modal" style="color:#FFF;">{{trans('home.redeem_coupon')}}</a>
+                        </span>
+                        </li>
+                    @endif
+                    <li class="list-group-item">
+                        {{trans('home.account_balance')}}：{{$info['balance']}}
+                        <span class="badge badge-danger">
+                            <a href="javascript:;" data-toggle="modal" data-target="#charge_modal" style="color:#FFF;">{{trans('home.recharge')}}</a>
+                        </span>
+                    </li>
+                    <li class="list-group-item">
+                        {{trans('home.account_expire')}}：{{date('Y-m-d 0:0:0') > $info['expire_time'] ? trans('home.expired') : $info['expire_time']}}
+                    </li>
+                    <li class="list-group-item">
+                        {{trans('home.account_last_usage')}}：{{empty($info['t']) ? trans('home.never_used') : date('Y-m-d H:i:s', $info['t'])}}
+                    </li>
+                    <li class="list-group-item">
+                        {{trans('home.account_last_login')}}：{{empty($info['last_login']) ? trans('home.never_loggedin') : date('Y-m-d H:i:s', $info['last_login'])}}
+                    </li>
+                    <li class="list-group-item">
+                        {{trans('home.account_bandwidth_usage')}}：{{$info['usedTransfer']}}（{{$info['totalTransfer']}}）@if($info['traffic_reset_day']) &ensp;{{trans('home.account_reset_notice', ['reset_day' => $info['traffic_reset_day']])}}  @endif
+                        <div class="progress progress-striped active" style="margin-bottom:0;" title="{{trans('home.account_total_traffic')}} {{$info['totalTransfer']}}，{{trans('home.account_usage_traffic')}} {{$info['usedTransfer']}}">
+                            <div class="progress-bar progress-bar-danger" role="progressbar" aria-valuenow="{{$info['usedPercent'] * 100}}" aria-valuemin="0" aria-valuemax="100" style="width: {{$info['usedPercent'] * 100}}%">
+                                <span class="sr-only"> {{$info['usedTransfer']}} / {{$info['totalTransfer']}} </span>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+
+                @if($is_push_bear && $push_bear_qrcode)
+                    <ul class="list-group" style="border-radius: 4px;">
+                        <li class="list-group-item">
+                            <div style="text-align: center">
+                                <span> 微信扫码订阅，获取本站最新资讯 </span>
+                                <br><br>
+                                <div id="subscribe_qrcode" style="text-align: center;"></div>
+                            </div>
+                        </li>
+                    </ul>
+                @endif
             </div>
         </div>
         <div id="charge_modal" class="modal fade" tabindex="-1" data-focus-on="input:first" data-keyboard="false">
@@ -133,46 +238,49 @@
                 <div class="modal-content">
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
-                        <h4 class="modal-title"> 充值 </h4>
+                        <h4 class="modal-title">{{trans('home.recharge_balance')}}</h4>
                     </div>
                     <div class="modal-body">
-                        <div class="row">
-                            <div class="col-md-6">
-                                <span>微信</span>
-                                <br />
-                                <img src="{{$wechat_qrcode}}" alt="" style="width:200px; height:200px;" />
+                        <div class="alert alert-danger" style="display: none; text-align: center;" id="charge_msg"></div>
+                        <form action="#" method="post" class="form-horizontal">
+                            <div class="form-body">
+                                <div class="form-group">
+                                    <label for="charge_type" class="col-md-4 control-label">{{trans('home.payment_method')}}</label>
+                                    <div class="col-md-6">
+                                        <select class="form-control" name="charge_type" id="charge_type">
+                                            <option value="1" selected>{{trans('home.coupon')}}</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="charge_coupon" class="col-md-4 control-label"> {{trans('home.coupon_code')}} </label>
+                                    <div class="col-md-6">
+                                        <input type="text" class="form-control" name="charge_coupon" id="charge_coupon" placeholder="{{trans('home.please_input_coupon')}}">
+                                    </div>
+                                </div>
                             </div>
-                            <div class="col-md-6">
-                                <span>支付宝</span>
-                                <br />
-                                <img src="{{$alipay_qrcode}}" alt="" style="width:200px; height:200px;" />
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-offset-4">
-                                <span>付款时请备注您的账号，以便及时到账</span>
-                            </div>
-                        </div>
+                        </form>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" data-dismiss="modal" class="btn dark btn-outline">关闭</button>
+                        <button type="button" data-dismiss="modal" class="btn dark btn-outline">{{trans('home.close')}}</button>
+                        <button type="button" class="btn red btn-outline" onclick="return charge();">{{trans('home.recharge')}}</button>
                     </div>
                 </div>
             </div>
         </div>
-        <div id="excharge_modal" class="modal fade" tabindex="-1" data-focus-on="input:first" data-keyboard="false">
+        <div id="exchange_modal" class="modal fade" tabindex="-1" data-focus-on="input:first" data-keyboard="false">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
-                        <h4 class="modal-title"> 兑换流量 </h4>
+                        <h4 class="modal-title"> {{trans('home.redeem_score')}} </h4>
                     </div>
                     <div class="modal-body">
-                        <div class="alert alert-info" id="msg">您有 {{$info['score']}} 积分，共计可兑换 {{$info['score']}}M 免费流量。</div>
+                        <div class="alert alert-info" id="msg">{{trans('home.redeem_info', ['score' => $info['score']])}}</div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" data-dismiss="modal" class="btn dark btn-outline">取消</button>
-                        <button type="button" class="btn red btn-outline" onclick="return exchange();">立即兑换</button>
+                        <button type="button" data-dismiss="modal" class="btn dark btn-outline">{{trans('home.close')}}</button>
+                        <button type="button" class="btn red btn-outline" onclick="return exchange();">{{trans('home.redeem')}}</button>
                     </div>
                 </div>
             </div>
@@ -184,10 +292,29 @@
                     <div class="modal-content">
                         <div class="modal-header">
                             <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
-                            <h4 class="modal-title">配置信息</h4>
+                            <h4 class="modal-title">{{trans('home.setting_info')}}</h4>
                         </div>
                         <div class="modal-body">
                             <textarea class="form-control" rows="10" readonly="readonly">{{$node->txt}}</textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal fade draggable-modal" id="link_{{$node->id}}" tabindex="-1" role="basic" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                            <h4 class="modal-title">{{$node->name}}</h4>
+                        </div>
+                        <div class="modal-body">
+                            <textarea class="form-control" rows="5" readonly="readonly">{{$node->ssr_scheme}}</textarea>
+                            <a href="{{$node->ssr_scheme}}" class="btn purple uppercase" style="display: block; width: 100%;margin-top: 10px;">打开SSR</a>
+                            @if($node->ss_scheme)
+                            <p></p>
+                            <textarea class="form-control" rows="3" readonly="readonly">{{$node->ss_scheme}}</textarea>
+                            <a href="{{$node->ss_scheme}}" class="btn blue uppercase" style="display: block; width: 100%;margin-top: 10px;">打开SS</a>
+                            @endif
                         </div>
                     </div>
                 </div>
@@ -197,23 +324,20 @@
                     <div class="modal-content">
                         <div class="modal-header">
                             <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
-                            <h4 class="modal-title">请使用客户端扫描二维码</h4>
+                            <h4 class="modal-title">{{trans('home.scan_qrcode')}}</h4>
                         </div>
                         <div class="modal-body">
                             <div class="row">
                                 @if ($node->compatible)
                                     <div class="col-md-6">
-                                        <div style="font-size:16px;text-align:center;padding-bottom:10px;"><span>SSR</span></div>
-                                        <div id="qrcode_ssr_img_{{$node->id}}"></div>
+                                        <div id="qrcode_ssr_img_{{$node->id}}" style="text-align: center;"></div>
                                     </div>
                                     <div class="col-md-6">
-                                        <div style="font-size:16px;text-align:center;padding-bottom:10px;"><span>SS</span></div>
-                                        <div id="qrcode_ss_img_{{$node->id}}"></div>
+                                        <div id="qrcode_ss_img_{{$node->id}}" style="text-align: center;"></div>
                                     </div>
                                 @else
                                     <div class="col-md-12">
-                                        <div style="font-size:16px;text-align:center;padding-bottom:10px;"><span>SSR</span></div>
-                                        <div id="qrcode_ssr_img_{{$node->id}}"></div>
+                                        <div id="qrcode_ssr_img_{{$node->id}}" style="text-align: center;"></div>
                                     </div>
                                 @endif
                             </div>
@@ -227,16 +351,53 @@
     <!-- END CONTENT BODY -->
 @endsection
 @section('script')
+    <script src="/assets/global/plugins/clipboardjs/clipboard.min.js" type="text/javascript"></script>
+    <script src="/assets/pages/scripts/components-clipboard.min.js" type="text/javascript"></script>
     <script src="/assets/global/plugins/jquery-qrcode/jquery.qrcode.min.js" type="text/javascript"></script>
     <script src="/assets/global/plugins/jquery-ui/jquery-ui.min.js" type="text/javascript"></script>
     <script src="/js/layer/layer.js" type="text/javascript"></script>
 
     <script type="text/javascript">
+        // 充值
+        function charge() {
+            var _token = '{{csrf_token()}}';
+            var charge_type = $("#charge_type").val();
+            var charge_coupon = $("#charge_coupon").val();
+
+            if (charge_type == '1' && (charge_coupon == '' || charge_coupon == undefined)) {
+                $("#charge_msg").show().html("{{trans('home.coupon_not_empty')}}");
+                $("#charge_coupon").focus();
+                return false;
+            }
+
+            $.ajax({
+                url:'{{url('charge')}}',
+                type:"POST",
+                data:{_token:_token, coupon_sn:charge_coupon},
+                beforeSend:function(){
+                    $("#charge_msg").show().html("{{trans('home.recharging')}}");
+                },
+                success:function(ret){
+                    if (ret.status == 'fail') {
+                        $("#charge_msg").show().html(ret.message);
+                        return false;
+                    }
+
+                    $("#charge_modal").modal("hide");
+                    window.location.reload();
+                },
+                error:function(){
+                    $("#charge_msg").show().html("{{trans('home.error_response')}}");
+                },
+                complete:function(){}
+            });
+        }
+
         // 积分兑换流量
         function exchange() {
             $.ajax({
                 type: "POST",
-                url: "{{url('user/exchange')}}",
+                url: "{{url('exchange')}}",
                 async: false,
                 data: {_token:'{{csrf_token()}}'},
                 dataType: 'json',
@@ -281,12 +442,32 @@
 
         // 节点订阅
         function subscribe() {
-            window.location.href = '{{url('/user/subscribe')}}';
+            window.location.href = '{{url('subscribe')}}';
         }
 
         // 显示加密、混淆、协议
         function show(txt) {
             layer.msg(txt);
+        }
+
+        // 生成消息通道订阅二维码
+        @if($is_push_bear && $push_bear_qrcode)
+            $('#subscribe_qrcode').qrcode({render:"canvas", text:"{{$push_bear_qrcode}}", width:170, height:170});
+        @endif
+
+        // 更换订阅地址
+        function exchangeSubscribe() {
+            layer.confirm('更换订阅地址将导致：<br>1.旧地址立即失效；<br>2.连接密码被更改；', {icon: 7, title:'警告'}, function(index) {
+                $.post("{{url('exchangeSubscribe')}}", {_token:'{{csrf_token()}}'}, function (ret) {
+                    layer.msg(ret.message, {time:1000}, function () {
+                        if (ret.status == 'success') {
+                            window.location.reload();
+                        }
+                    });
+                });
+
+                layer.close(index);
+            });
         }
     </script>
 @endsection
