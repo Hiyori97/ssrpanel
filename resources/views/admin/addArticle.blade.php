@@ -1,9 +1,6 @@
 @extends('admin.layouts')
-
 @section('css')
-    <link href="/assets/global/plugins/bootstrap-datepicker/css/bootstrap-datepicker3.min.css" rel="stylesheet" type="text/css" />
 @endsection
-@section('title', '控制面板')
 @section('content')
     <!-- BEGIN CONTENT BODY -->
     <div class="page-content" style="padding-top:0;">
@@ -29,6 +26,21 @@
                         <form action="{{url('admin/addArticle')}}" method="post" enctype="multipart/form-data" class="form-horizontal" onsubmit="return do_submit();">
                             <div class="form-body">
                                 <div class="form-group">
+                                    <label for="type" class="control-label col-md-1">类型</label>
+                                    <div class="col-md-6">
+                                        <div class="mt-radio-inline">
+                                            <label class="mt-radio">
+                                                <input type="radio" name="type" value="1" checked> 文章
+                                                <span></span>
+                                            </label>
+                                            <label class="mt-radio">
+                                                <input type="radio" name="type" value="2"> 公告
+                                                <span></span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
                                     <label class="control-label col-md-1">标题</label>
                                     <div class="col-md-6">
                                         <input type="text" class="form-control" name="title" id="title" placeholder="" autofocus required>
@@ -36,18 +48,9 @@
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <label class="control-label col-md-1">类型</label>
+                                    <label class="control-label col-md-1">简介</label>
                                     <div class="col-md-6">
-                                        <select class="form-control" name="type" id="type">
-                                            <option value="1">文章</option>
-                                            <option value="2">公告</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label class="control-label col-md-1">作者</label>
-                                    <div class="col-md-6">
-                                        <input type="text" class="form-control" name="author" id="author" placeholder="" required>
+                                        <input type="text" class="form-control" name="summary" id="summary" placeholder="">
                                     </div>
                                 </div>
                                 <div class="form-group">
@@ -85,7 +88,6 @@
 @section('script')
     <script src="/js/ueditor/ueditor.config.js" type="text/javascript" charset="utf-8"></script>
     <script src="/js/ueditor/ueditor.all.js" type="text/javascript" charset="utf-8"></script>
-    <script src="/js/layer/layer.js" type="text/javascript"></script>
 
     <script type="text/javascript">
         // 百度富文本编辑器
@@ -103,16 +105,17 @@
         function do_submit() {
             var _token = '{{csrf_token()}}';
             var title = $('#title').val();
-            var type = $('#type').val();
+            var type = $("input:radio[name='type']:checked").val();
             var author = $('#author').val();
-            var sort = $('#sort').val();
+            var summary = $('#summary').val();
             var content = UE.getEditor('editor').getContent();
+            var sort = $('#sort').val();
 
             $.ajax({
                 type: "POST",
                 url: "{{url('admin/addArticle')}}",
                 async: false,
-                data: {_token:_token, title: title, type:type, author:author, sort:sort, content:content},
+                data: {_token:_token, title: title, type:type, author:author, summary:summary, content:content, sort:sort},
                 dataType: 'json',
                 success: function (ret) {
                     layer.msg(ret.message, {time:1000}, function() {

@@ -14,7 +14,8 @@ use Log;
 
 /**
  * 优惠券控制器
- * Class LoginController
+ *
+ * Class CouponController
  *
  * @package App\Http\Controllers
  */
@@ -25,7 +26,7 @@ class CouponController extends Controller
     {
         $view['couponList'] = Coupon::query()->where('is_del', 0)->orderBy('status', 'asc')->orderBy('id', 'desc')->paginate(10);
 
-        return Response::view('coupon/couponList', $view);
+        return Response::view('coupon.couponList', $view);
     }
 
     // 添加商品
@@ -47,7 +48,7 @@ class CouponController extends Controller
                 return Redirect::back()->withInput();
             }
 
-            if (strtotime($available_start) >= strtotime($available_end)) {
+            if (strtotime($available_start) > strtotime($available_end)) {
                 Session::flash('errorMsg', '有效期范围错误');
 
                 return Redirect::back()->withInput();
@@ -58,6 +59,14 @@ class CouponController extends Controller
             if ($request->hasFile('logo')) {
                 $file = $request->file('logo');
                 $fileType = $file->getClientOriginalExtension();
+
+                // 验证文件合法性
+                if (!in_array($fileType, ['jpg', 'png', 'jpeg', 'bmp'])) {
+                    Session::flash('errorMsg', 'LOGO不合法');
+
+                    return Redirect::back()->withInput();
+                }
+
                 $logoName = date('YmdHis') . mt_rand(1000, 2000) . '.' . $fileType;
                 $move = $file->move(base_path() . '/public/upload/image/coupon/', $logoName);
                 $logo = $move ? '/upload/image/coupon/' . $logoName : '';
@@ -74,7 +83,7 @@ class CouponController extends Controller
                     $obj->usage = $usage;
                     $obj->amount = empty($amount) ? 0 : $amount;
                     $obj->discount = empty($discount) ? 0 : $discount;
-                    $obj->available_start = strtotime(date('Y-m-d 0:0:0', strtotime($available_start)));
+                    $obj->available_start = strtotime(date('Y-m-d 00:00:00', strtotime($available_start)));
                     $obj->available_end = strtotime(date('Y-m-d 23:59:59', strtotime($available_end)));
                     $obj->status = 0;
                     $obj->save();
@@ -93,7 +102,7 @@ class CouponController extends Controller
 
             return Redirect::to('coupon/addCoupon');
         } else {
-            return Response::view('coupon/addCoupon');
+            return Response::view('coupon.addCoupon');
         }
     }
 

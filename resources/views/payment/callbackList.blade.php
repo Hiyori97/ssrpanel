@@ -1,15 +1,6 @@
 @extends('admin.layouts')
-
 @section('css')
-    <link href="/assets/global/plugins/fancybox/source/jquery.fancybox.css" rel="stylesheet" type="text/css" />
-    <style>
-        .fancybox > img {
-            width: 75px;
-            height: 75px;
-        }
-    </style>
 @endsection
-@section('title', '控制面板')
 @section('content')
     <!-- BEGIN CONTENT BODY -->
     <div class="page-content" style="padding-top:0;">
@@ -27,22 +18,22 @@
                         <div class="table-scrollable table-scrollable-borderless">
                             <table class="table table-hover table-light">
                                 <thead>
-                                <tr>
-                                    <th> # </th>
-                                    <th> client_id </th>
-                                    <th> 有赞订单ID </th>
-                                    <th> kdt_id </th>
-                                    <th> 应用名称 </th>
-                                    <th> 模式 </th>
-                                    <th> 消息详情 </th>
-                                    <th> 发送次数 </th>
-                                    <th> 鉴权标记 </th>
-                                    <th> 状态 </th>
-                                    <th> 是否测试 </th>
-                                    <th> 类型 </th>
-                                    <th> 版本 </th>
-                                    <th> 创建时间 </th>
-                                </tr>
+                                    <tr>
+                                        <th> # </th>
+                                        <th> 应用名称 </th>
+                                        {{--<th> client_id </th>--}}
+                                        {{--<th> kdt_id </th>--}}
+                                        <th> 有赞订单ID </th>
+                                        <th> 模式 </th>
+                                        <th> 消息详情 </th>
+                                        {{--<th> 发送次数 </th>--}}
+                                        {{--<th> 鉴权标记 </th>--}}
+                                        <th> 状态 </th>
+                                        {{--<th> 是否测试 </th>--}}
+                                        {{--<th> 类型 </th>--}}
+                                        {{--<th> 版本 </th>--}}
+                                        <th> 创建时间 </th>
+                                    </tr>
                                 </thead>
                                 <tbody>
                                 @if($list->isEmpty())
@@ -53,18 +44,18 @@
                                     @foreach($list as $vo)
                                         <tr class="odd gradeX">
                                             <td> {{$vo->id}} </td>
-                                            <td> {{$vo->client_id}} </td>
-                                            <td> {{$vo->yz_id}} </td>
-                                            <td> {{$vo->kdt_id}} </td>
                                             <td> {{$vo->kdt_name}} </td>
-                                            <td> {{$vo->mode}} </td>
+                                            {{--<td> {{$vo->client_id}} </td>--}}
+                                            {{--<td> {{$vo->kdt_id}} </td>--}}
+                                            <td> {{$vo->yz_id}} </td>
+                                            <td> {{$vo->mode ? '自用型/工具型/平台型消息' : '签名模式消息'}} </td>
                                             <td> {{$vo->msg}} </td>
-                                            <td> {{$vo->sendCount}} </td>
-                                            <td> {{$vo->sign}} </td>
+                                            {{--<td> {{$vo->sendCount}} </td>--}}
+                                            {{--<td> {{$vo->sign}} </td>--}}
                                             <td> {{$vo->status}} </td>
-                                            <td> {{$vo->test}} </td>
-                                            <td> {{$vo->type}} </td>
-                                            <td> {{$vo->version}} </td>
+                                            {{--<td> {{$vo->test ? '是' : '否'}} </td>--}}
+                                            {{--<td> {{$vo->type}} </td>--}}
+                                            {{--<td> {{$vo->version}} </td>--}}
                                             <td> {{$vo->created_at}} </td>
                                         </tr>
                                     @endforeach
@@ -92,7 +83,4 @@
     <!-- END CONTENT BODY -->
 @endsection
 @section('script')
-    <script type="text/javascript">
-        //
-    </script>
 @endsection

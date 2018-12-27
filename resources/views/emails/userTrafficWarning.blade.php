@@ -17,8 +17,8 @@
                                             <tr style="padding:0;text-align:left;vertical-align:top">
                                                 <th style="Margin:0;color:#333;font-family:Helvetica,Arial,sans-serif;font-size:16px;font-weight:400;line-height:19px;margin:0;padding:0;text-align:left">
                                                     <h3 style="Margin:0;Margin-bottom:10px;color:inherit;font-family:Helvetica,Arial,sans-serif;font-size:28px;font-weight:400;line-height:1.3;margin:0;margin-bottom:0;padding:0;text-align:left;word-wrap:normal">
-                                                        <a href="{{$websiteUrl}}" style="Margin:0;color:#40253b;font-family:Helvetica,Arial,sans-serif;font-weight:400;line-height:1.3;margin:0;padding:0;text-align:left;text-decoration:none" target="_blank">
-                                                            {{$websiteName}}
+                                                        <a href="#" style="Margin:0;color:#40253b;font-family:Helvetica,Arial,sans-serif;font-weight:400;line-height:1.3;margin:0;padding:0;text-align:left;text-decoration:none" target="_blank">
+                                                            {{\App\Components\Helpers::systemConfig()['website_name']}}
                                                         </a>
                                                     </h3>
                                                 </th>
@@ -68,12 +68,7 @@
                                 <tr style="padding:0;text-align:left;vertical-align:top">
                                     <th style="Margin:0;color:#333;font-family:Helvetica,Arial,sans-serif;font-size:16px;font-weight:400;line-height:19px;margin:0;padding:0;text-align:left">
                                         <div class="release" style="padding-top:5px;padding-left:20px;padding-bottom:20px;">
-                                            <p>这是一封来自 {{$websiteName}} 的流量警告提醒。</p>
-                                            <p>您的流量已使用【{{$usedPercent}}%】了，为了确保您可要继续正常享受我们的服务，请及时续费或者购买流量包。</p>
-                                            <p>点击这里去<a href="{{$websiteShopUrl}}" target="_blank">【购买商品】</a>，或者点击下面的链接。</p>
-                                            <p>
-                                                <a href="{{$websiteShopUrl}}" target="_blank">{{$websiteShopUrl}}</a>
-                                            </p>
+                                            <p>您的流量已使用【{{$usedPercent}}%】，为了确保您可以继续正常使用我们的服务，请及时续费或者购买流量包。</p>
                                         </div>
                                     </th>
                                     <th class="expander" style="Margin:0;color:#333;font-family:Helvetica,Arial,sans-serif;font-size:16px;font-weight:400;line-height:19px;margin:0;padding:0!important;text-align:left;visibility:hidden;width:0"></th>

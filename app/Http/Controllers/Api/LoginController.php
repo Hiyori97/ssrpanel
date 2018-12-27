@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Components\Helpers;
 use App\Http\Controllers\Controller;
 use App\Http\Models\User;
 use App\Http\Models\UserSubscribe;
@@ -13,20 +14,28 @@ use DB;
 
 /**
  * 登录接口
+ *
  * Class LoginController
  *
  * @package App\Http\Controllers
  */
 class LoginController extends Controller
 {
+    protected static $systemConfig;
+
+    function __construct()
+    {
+        self::$systemConfig = Helpers::systemConfig();
+    }
+
     // 登录返回订阅信息
     public function login(Request $request)
     {
         $username = trim($request->get('username'));
         $password = trim($request->get('password'));
-        $cacheKey = 'request_times_' . md5($request->getClientIp());
+        $cacheKey = 'request_times_' . md5(getClientIp());
 
-        // 连续请求失败10次，则封IP一小时
+        // 连续请求失败15次，则封IP一小时
         if (Cache::has($cacheKey)) {
             if (Cache::get($cacheKey) >= 15) {
                 return Response::json(['status' => 'fail', 'data' => [], 'message' => '请求失败超限，禁止访问1小时']);
@@ -68,14 +77,14 @@ class LoginController extends Controller
             $subscribe->increment('times', 1);
 
             // 记录每次请求
-            $this->log($subscribe->id, $request->getClientIp(), 'API访问');
+            $this->log($subscribe->id, getClientIp(), 'API访问');
 
             // 处理用户信息
-            unset($user->password, $user->remember_token);
+            unset($user->password, $user->reg_ip, $user->remark, $user->usage, $user->remember_token, $user->created_at, $user->updated_at);
             $data['user'] = $user;
 
             // 订阅链接
-            $data['link'] = $this->systemConfig['subscribe_domain'] ? $this->systemConfig['subscribe_domain'] . '/s/' . $code : $this->systemConfig['website_url'] . '/s/' . $code;
+            $data['link'] = self::$systemConfig['subscribe_domain'] ? self::$systemConfig['subscribe_domain'] . '/s/' . $code : self::$systemConfig['website_url'] . '/s/' . $code;
 
             DB::commit();
 

@@ -25,6 +25,9 @@ class Kernel extends ConsoleKernel
         \App\Console\Commands\UserTrafficAbnormalAutoWarning::class,
         \App\Console\Commands\UserExpireAutoWarning::class,
         \App\Console\Commands\UserTrafficAutoWarning::class,
+        \App\Console\Commands\upgradeUserPassword::class,
+        \App\Console\Commands\upgradeUserVmessId::class,
+        \App\Console\Commands\AutoReportNode::class,
     ];
 
     /**
@@ -39,15 +42,16 @@ class Kernel extends ConsoleKernel
         $schedule->command('autoJob')->everyMinute();
         $schedule->command('autoClearLog')->everyThirtyMinutes();
         $schedule->command('autoDecGoodsTraffic')->everyTenMinutes();
-        $schedule->command('autoResetUserTraffic')->monthlyOn(1);
-        $schedule->command('autoCheckNodeStatus')->hourly();
+        $schedule->command('autoResetUserTraffic')->daily();
+        $schedule->command('autoCheckNodeStatus')->everyMinute();
         $schedule->command('autoStatisticsNodeDailyTraffic')->dailyAt('23:55');
         $schedule->command('autoStatisticsNodeHourlyTraffic')->hourly();
         $schedule->command('autoStatisticsUserDailyTraffic')->dailyAt('23:50');
         $schedule->command('autoStatisticsUserHourlyTraffic')->hourly();
         $schedule->command('userTrafficAbnormalAutoWarning')->hourly();
-        $schedule->command('userExpireAutoWarning')->dailyAt('10:20');
+        $schedule->command('userExpireAutoWarning')->dailyAt('20:00');
         $schedule->command('userTrafficAutoWarning')->dailyAt('10:30');
+        $schedule->command('autoReportNode')->dailyAt('09:00');
     }
 
     /**

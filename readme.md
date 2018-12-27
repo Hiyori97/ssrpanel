@@ -1,28 +1,27 @@
 ## 项目描述
 ````
 1.SSR多节点账号管理面板，兼容SS、SSRR，需配合SSR或SSRR版后端使用
-2.支持v2ray（开发中）
-3.开放API，方便自行定制改造客户端
-4.内含简单的购物、卡券、邀请码、推广返利&提现、文章管理、工单（回复带邮件提醒）等模块
-5.用户、节点标签化，不同用户可见不同节点
-6.SS配置转SSR(R)配置，轻松一键导入导出SS账号
-7.单机单节点日志分析功能
-8.账号、节点24小时和本月的流量监控
-9.流量异常、节点宕机邮件或ServerChan及时通知
-10.账号临近到期、流量不够会自动发邮件提醒，自动禁用到期、流量异常的账号，自动清除日志等各种强大的定时任务
-11.后台一键添加加密方式、混淆、协议、等级
-12.屏蔽常见爬虫、屏蔽机器人
-14.支持单端口多用户
-15.支持节点订阅功能，可自由更换订阅地址、封禁账号订阅地址、禁止特定型号设备订阅
-17.支持多国语言，自带英日韩繁语言包
-18.订阅防投毒机制
-19.自动释放端口机制，防止端口被大量长期占用
-20.有赞云支付
-21.封特定国家、地区、封IP段（开发中）
-22.中转节点（开发中）
-23.强大的营销管理：PushBear群发消息
-24.telegram机器人（开发中）
-25.防墙监测，节点被墙自动提醒（TCP阻断）
+2.支持V2Ray
+3.内含简单的购物、卡券、邀请码、推广返利&提现、文章管理、工单（回复带邮件提醒）等模块
+4.用户、节点标签化，不同用户可见不同节点
+5.SS配置转SSR(R)配置，轻松一键导入导出SS账号
+6.单机单节点日志分析功能
+7.账号、节点24小时和本月的流量监控
+8.流量异常、节点宕机邮件或ServerChan及时通知
+9.账号临近到期、流量不够会自动发邮件提醒，自动禁用到期、流量异常的账号，自动清除日志等各种强大的定时任务
+10.后台一键添加加密方式、混淆、协议、等级
+11.屏蔽常见爬虫、屏蔽机器人
+12.支持单端口多用户
+13.支持节点订阅功能，可自由更换订阅地址、封禁账号订阅地址、禁止特定型号设备订阅
+14.支持多国语言，自带英日韩繁语言包
+15.订阅防投毒机制
+16.自动释放端口机制，防止端口被大量长期占用
+17.有赞云支付、TrimePay支付
+18.可以阻止大陆或者海外访问
+19.中转节点（开发中）
+20.强大的营销管理：PushBear群发消息
+21.telegram机器人（开发中）
+22.防墙监测，节点被墙自动提醒、自动下线（TCP阻断）
 ````
 
 ## 演示&交流
@@ -31,6 +30,7 @@
 演示站：http://demo.ssrpanel.com
 telegram订阅频道：https://t.me/ssrpanel
 ````
+官网搭建于Azure，由代理商 [@LesHutt](https://t.me/LesHutt) 提供，需要流量机器，价格优惠需要的联系他。
 
 ## 捐赠
 **以太坊钱包** : 0x968f797f194fcec05ea571723199748b58de38ba
@@ -46,14 +46,14 @@ PHP 7.1 （必须）
 MYSQL 5.5 （推荐5.6+）
 内存 1G+ 
 磁盘空间 10G+
-PHP必须开启zip、xml、curl、gd、gd2、fileinfo、openssl、mbstring组件
+PHP必须开启zip、xml、curl、gd2、fileinfo、openssl、mbstring组件
 安装完成后记得编辑.env中 APP_DEBUG 改为 false
 ````
 
 #### 拉取代码
 ````
 cd /home/wwwroot/
-git clone https://github.com/ssrpanel/SSRPanel.git
+git clone https://github.com/ssrpanel/ssrpanel.git
 ````
 
 #### 配置数据库
@@ -65,13 +65,13 @@ git clone https://github.com/ssrpanel/SSRPanel.git
 
 #### 安装面板
 ````
-cd SSRPanel/
+cd ssrpanel/
 cp .env.example .env
 （然后 vi .env 修改数据库的连接信息）
 php composer.phar install
 php artisan key:generate
 chown -R www:www storage/
-chmod -R 777 storage/
+chmod -R 755 storage/
 ````
 
 #### 加入NGINX的URL重写规则
@@ -97,6 +97,14 @@ vim /usr/local/php/etc/php.ini
 修改完记得重启NGINX和PHP-FPM
 ````
 
+#### 密码错误
+````
+如果正确安装完成后发现admin无法登陆，请到SSRPanel目录下执行如下命令：
+php artisan upgradeUserPassword
+
+admin的密码将被改为admin
+````
+
 #### 重启NGINX和PHP-FPM
 ````
 service nginx restart
@@ -106,7 +114,7 @@ service php-fpm restart
 ## 定时任务
 ````
 crontab加入如下命令（请自行修改php、ssrpanel路径）：
-* * * * * php /home/wwwroot/SSRPanel/artisan schedule:run >> /dev/null 2>&1
+* * * * * php /home/wwwroot/ssrpanel/artisan schedule:run >> /dev/null 2>&1
 
 注意运行权限，必须跟ssrpanel项目权限一致，否则出现各种莫名其妙的错误
 例如用lnmp的话默认权限用户组是 www:www，则添加定时任务是这样的：
@@ -135,11 +143,8 @@ crontab -e -u www
 
 ###### 发邮件失败处理
 ````
-如果使用了逗比的ban_iptables.sh来防止用户发垃圾邮件
-可能会导致出现 Connection could not be established with host smtp.exmail.qq.com [Connection timed out #110] 这样的错误
-因为smtp发邮件必须用到25,26,465,587这四个端口，逗比的一键脚本会将这些端口一并封禁
-可以编辑iptables，注释掉以下这段（前面加个#号就可以），然后保存并重启iptables
-#-A OUTPUT -p tcp -m multiport --dports 25,26,465,587 -m state --state NEW,ESTABLISHED -j REJECT --reject-with icmp-port-unreachable
+出现 Connection could not be established with host smtp.exmail.qq.com [Connection timed out #110] 这样的错误
+因为smtp发邮件必须用到25,26,465,587这四个端口，故需要允许这四个端口通信
 ````
 
 ## 英文版
@@ -152,47 +157,38 @@ crontab -e -u www
 ````
 找到SSR服务端所在的ssserver.log文件
 进入ssrpanel所在目录，建立一个软连接，并授权
-cd /home/wwwroot/SSRPanel/storage/app
+cd /home/wwwroot/ssrpanel/storage/app
 ln -S ssserver.log /root/shadowsocksr/ssserver.log
 chown www:www ssserver.log
 ````
 
+## IP库
+```
+本项目使用的是纯真IP库，如果需要更新IP库文件，请上纯真官网把qqwry.dat下载并覆盖至 storage/qqwrt.dat 文件
+项目里还自带了IPIP的IP库，但是未使用，有开发能力的请自行测试。
+```
+
+## HTTPS
+```
+将 .env 文件里的 REDIRECT_HTTPS 值改为true，则全站强制走https
+```
+
 ## SSR(R)部署
-###### 手动部署(基于SSRR 3.2.2，推荐)
+###### 手动部署
+
+- 无上报IP版本：
 ````
-git clone https://github.com/ssrpanel/shadowsocksr.git
+wget https://github.com/ssrpanel/shadowsocksr/archive/V3.2.2.tar.gz
+tar zxvf V3.2.2.tar.gz
 cd shadowsocksr
-sh initcfg.sh
+sh ./setup_cymysql2.sh
 配置 usermysql.json 里的数据库链接，NODE_ID就是节点ID，对应面板后台里添加的节点的自增ID，所以请先把面板搭好，搭好后进后台添加节点
 ````
 
-###### 一键自动部署(基于SSR3.4)(不推荐，该版本有内存溢出BUG)
-````
-wget -N --no-check-certificate https://raw.githubusercontent.com/ssrpanel/ssrpanel/master/server/deploy_ssr.sh;chmod +x deploy_ssr.sh;./deploy_ssr.sh
-
-或者使用另一个脚本
-
-wget -N --no-check-certificate https://raw.githubusercontent.com/maxzh0916/Shadowsowcks1Click/master/Shadowsowcks1Click.sh;chmod +x Shadowsowcks1Click.sh;./Shadowsowcks1Click.sh
-````
-
-## 更新代码
-````
-进到ssrpanel目录下执行：
-git pull
-
-如果每次更新都会出现数据库文件被覆盖，请先执行一次：
-chmod a+x fix_git.sh && sh fix_git.sh
-
-如果本地自行改了文件，想用回原版代码，请直接执行以下命令：
-chmod a+x update.sh && sh update.sh
-
-如果更新完代码各种错误，请先执行一遍 php composer.phar install
-````
-
-## 网卡流量监控一键脚本（Vnstat）
-````
-wget -N --no-check-certificate https://raw.githubusercontent.com/ssrpanel/ssrpanel/master/server/deploy_vnstat.sh;chmod +x deploy_vnstat.sh;./deploy_vnstat.sh
-````
+- 会上报在线IP版本：
+```
+https://github.com/ssrpanel/shadowsocksr
+```
 
 ## 单端口多用户
 ````
@@ -251,6 +247,7 @@ vim user-config.json
 2.强制更新： sh ./update.sh 
 
 如果你更改了本地文件，手动更新会提示错误需要合并代码（自己搞定），强制更新会直接覆盖你本地所有更改过的文件
+如果更新完代码各种错误，请先执行一遍 php composer.phar install
 ````
 
 ## 校时
@@ -264,21 +261,21 @@ cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
 yum install ntp
 ntpdate cn.pool.ntp.org
 ````
+#### 每日自动校时（crontab）
+```
+0 0 * * * /usr/sbin/ntpdate cn.pool.ntp.org 
+```
 
 ## 二开规范
 ````
-如果有小伙伴要基于本程序进行二次开发，自行定制，请谨记一下规则（如果愿意提PR我也很欢迎）
+如果有小伙伴要基于本程序进行二次开发，自行定制，请谨记一下规则（欢迎提PR，我会免费拉你入小群的）
 1.数据库表字段请务必使用蟒蛇法，严禁使用驼峰法
 2.写完代码最好格式化，该空格一定要空格，该注释一定要注释，便于他人阅读代码
 3.本项目中ajax返回格式都是 {"status":"fail 或者 success", "data":[数据], "message":"文本消息提示语"}
 ````
 
-## 收费版
-````
-收费版代码混淆，不开源，具体请知识星球上私信我
-````
 
-## 致敬
+## 鸣谢
 - [@shadowsocks](https://github.com/shadowsocks)
 - [@breakwa11](https://github.com/breakwa11)
 - [@glzjin](https://github.com/esdeathlove)
@@ -287,6 +284,10 @@ ntpdate cn.pool.ntp.org
 - [@91yun](https://github.com/91yun)
 - [@Akkariiin](https://github.com/shadowsocksrr)
 - [@tonychanczm](https://github.com/tonychanczm)
-- [ipcheck](https://ipcheck.need.sh)
-- [check-host](https://www.check-host.net)
+- [@aiyahacke](https://github.com/aiyahacke)
+- [@ipcheck](https://ipcheck.need.sh)
+- [@cz88](http://www.cz88.net/index.shtml)
+- [@ip.sb](https://www.ip.sb)
+- [@aiyahacke](https://github.com/aiyahacke)
+- [@pch18](https://github.com/pch18/shadowsocksr)
 

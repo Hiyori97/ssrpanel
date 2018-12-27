@@ -1,10 +1,8 @@
 @extends('admin.layouts')
-
 @section('css')
     <link href="/assets/global/plugins/datatables/datatables.min.css" rel="stylesheet" type="text/css" />
     <link href="/assets/global/plugins/datatables/plugins/bootstrap/datatables.bootstrap.css" rel="stylesheet" type="text/css" />
 @endsection
-@section('title', '控制面板')
 @section('content')
     <!-- BEGIN CONTENT BODY -->
     <div class="page-content" style="padding-top:0;">
@@ -38,7 +36,8 @@
                                 <thead>
                                 <tr>
                                     <th> <span class="node-id"><a href="javascript:showIdTips();">ID</a></span> </th>
-                                    <th> 节点名称 </th>
+                                    <th> 类型 </th>
+                                    <th> 名称 </th>
                                     <th> IP </th>
                                     <th> 绑定域名 </th>
                                     <th> 状态 </th>
@@ -52,12 +51,13 @@
                                 <tbody>
                                     @if($nodeList->isEmpty())
                                         <tr>
-                                            <td colspan="10" style="text-align: center;">暂无数据</td>
+                                            <td colspan="11" style="text-align: center;">暂无数据</td>
                                         </tr>
                                     @else
                                         @foreach($nodeList as $node)
                                             <tr class="odd gradeX">
                                                 <td> {{$node->id}} </td>
+                                                <td> {{$node->type == 2 ? 'V2Ray' : 'Shadowsocks(R)'}} </td>
                                                 <td> {{$node->name}} </td>
                                                 <td> <span class="label {{$node->status ? 'label-danger' : 'label-default'}}">{{$node->ip}}</span> </td>
                                                 <td> <span class="label {{$node->status ? 'label-danger' : 'label-default'}}">{{$node->server}}</span> </td>
@@ -71,15 +71,20 @@
                                                     @if(!$node->is_subscribe) <span class="label label-info"><s>订</s></span> @endif
                                                 </td>
                                                 <td>
-                                                    <button type="button" class="btn btn-sm blue btn-outline" onclick="editNode('{{$node->id}}')">
-                                                        <i class="fa fa-pencil"></i>
-                                                    </button>
-                                                    <button type="button" class="btn btn-sm purple btn-outline" onclick="nodeMonitor('{{$node->id}}')">
-                                                        <i class="fa fa-area-chart"></i>
-                                                    </button>
-                                                    <button type="button" class="btn btn-sm red btn-outline" onclick="delNode('{{$node->id}}')">
-                                                        <i class="fa fa-trash"></i>
-                                                    </button>
+                                                    <button type="button" class="btn btn-sm blue btn-outline" onclick="editNode('{{$node->id}}')">编辑</button>
+                                                    <div class="btn-group">
+                                                        <a class="btn btn-info dropdown-toggle" data-toggle="dropdown" href="javascript:;" aria-expanded="false"> 更多
+                                                            <i class="fa fa-angle-down"></i>
+                                                        </a>
+                                                        <ul class="dropdown-menu">
+                                                            <li>
+                                                                <a href="javascript:nodeMonitor('{{$node->id}}');"> 流量概况 </a>
+                                                            </li>
+                                                            <li>
+                                                                <a href="javascript:delNode('{{$node->id}}');"> 删除 </a>
+                                                            </li>
+                                                        </ul>
+                                                    </div>
                                                 </td>
                                             </tr>
                                         @endforeach
@@ -107,8 +112,6 @@
     <!-- END CONTENT BODY -->
 @endsection
 @section('script')
-    <script src="/js/layer/layer.js" type="text/javascript"></script>
-
     <script type="text/javascript">
         // 添加节点
         function addNode() {

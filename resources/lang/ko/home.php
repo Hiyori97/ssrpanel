@@ -7,11 +7,13 @@ return [
     'exchange_subscribe'              => '주소변경',
     'subscribe_warning'               => '경고: 구독 주소 는 개인적 으로 사용 되 지 말고 이 주소 를 전파 하지 마시오',
     'reset_password_title'            => '비번리셋',
+    'username_placeholder'            => '아이디를 입력하세요',
     'system_down'                     => '서비스 점금중',
     'subscribe_baned'                 => '구독주소가 금지되였습니다,관리자에게 문의해주세요',
+    'download'                        => '다운로드',
 
     // 菜单
-    'home'                            => '메인',
+    'home'                            => '개인 센터',
     'services'                        => '서버구축',
     'traffic_log'                     => '트래픽',
     'help'                            => '도와주다',
@@ -24,6 +26,7 @@ return [
 
     // 首页
     'ratio_tips'                      => '지원 기능의 구독 기능을 사용하는 클라이언트 사용, 구독 기능으로 클라이언트 동기화 정보를 입력할 수 있습니다.',
+    'my_node_list'                    => '노드 목록',
     'subscribe_button'                => 'RSS구도주소 보기',
     'account_info'                    => '유저정보',
     'account_level'                   => '레벨',
@@ -37,6 +40,7 @@ return [
     'account_total_traffic'           => '총',
     'account_usage_traffic'           => '이미사용',
     'account_reset_notice'            => '매월 :reset_day 일에 트래픽 초기화',
+    'account_login_log'               => '로그인 로그',
     'article_title'                   => '공지사항',
     'recharge'                        => '충전',
     'enabled'                         => '정상',
@@ -85,7 +89,7 @@ return [
     'service_total_price'             => '합계',
     'service_pay_button'              => '잔액지불',
     'services_none'                   => '내용이 없습니다',
-    'service_traffic'                 => '트래픽 포함',
+    'service_traffic'                 => '함유 흐름',
     'service_days'                    => '휴효기간',
     'service_buy_button'              => '구입',
     'day'                             => '일',
@@ -93,6 +97,7 @@ return [
     'redeem_coupon'                   => '사용',
     'service_type_1'                  => '유량용 가방',
     'service_type_2'                  => '세트',
+    'service_type_3'                  => '잔액',
 
     // 流量日志
     'traffic_log_tips'                => '메모:데이터 갱신 지연.',
@@ -152,7 +157,7 @@ return [
     'ticket_reply_button'             => '답장',
 
     // 推广返利
-    'referral_title'                  => '나의홍보',
+    'referral_title'                  => '수수료',
     'referral_button'                 => '주소사 ',
     'referral_my_link'                => '홍보전용 링크',
     'referral_table_user'             => '소비자',
@@ -172,4 +177,7 @@ return [
     'logout'                          => '로그아웃',
     'promote_link'                    => '보급 링크 등록을 통해 활성화, 양측 모두 :traffic 유량에 장려합니다; 그들이 소비할 때, 그들의 소비 금액을 얻을 수 있는 :referral_percent% 를 장려합니다.',
     'promote_invite_code'             => '요청을 통해 등록 및 활성화, 양측 모두 :traffic 유량에 장려합니다, 그들이 소비할 때, 그들의 소비 금액을 얻을 수 있습니다 :referral_percent% 를 장려합니다',
+    'invite_user_title'               => '초대장',
+    'invite_user_username'            => '사용자 이름',
+    'invite_user_created_at'          => '등록 시간',
 ];

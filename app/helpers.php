@@ -101,3 +101,108 @@ if (!function_exists('formatBytes')) {
         return round($bytes, $precision) . ' ' . $units[$pow];
     }
 }
+
+// 获取访客真实IP
+if (!function_exists('getClientIP')) {
+    function getClientIP()
+    {
+        /*
+         * 访问时用localhost访问的，读出来的是“::1”是正常情况
+         * ::1说明开启了IPv6支持，这是IPv6下的本地回环地址的表示
+         * 使用IPv4地址访问或者关闭IPv6支持都可以不显示这个
+         */
+        if (isset($_SERVER)) {
+            if (isset($_SERVER['HTTP_CF_CONNECTING_IP'])) {
+                $_SERVER['REMOTE_ADDR'] = $_SERVER['HTTP_CF_CONNECTING_IP'];
+                $ip = $_SERVER['REMOTE_ADDR'];
+            } elseif (isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+                $ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
+            } elseif (isset($_SERVER['HTTP_CLIENT_ip'])) {
+                $ip = $_SERVER['HTTP_CLIENT_ip'];
+            } elseif (isset($_SERVER['REMOTE_ADDR'])) {
+                $ip = $_SERVER['REMOTE_ADDR'];
+            } else {
+                $ip = 'unknown';
+            }
+        } else {
+            if (getenv('HTTP_X_FORWARDED_FOR')) {
+                $ip = getenv('HTTP_X_FORWARDED_FOR');
+            } elseif (getenv('HTTP_CLIENT_ip')) {
+                $ip = getenv('HTTP_CLIENT_ip');
+            } else {
+                $ip = getenv('REMOTE_ADDR');
+            }
+        }
+
+        if (trim($ip) == '::1') {
+            $ip = '127.0.0.1';
+        }
+
+        return $ip;
+    }
+}
+
+// 获取IPv6信息
+if (!function_exists('getIPv6')) {
+    /*
+     * {
+     *     "longitude": 105,
+     *     "latitude": 35,
+     *     "area_code": "0",
+     *     "dma_code": "0",
+     *     "organization": "AS23910 China Next Generation Internet CERNET2",
+     *     "country": "China",
+     *     "ip": "2001:da8:202:10::36",
+     *     "country_code3": "CHN",
+     *     "continent_code": "AS",
+     *     "country_code": "CN"
+     *  }
+     */
+    function getIPv6($ip)
+    {
+        $url = 'https://api.ip.sb/geoip/' . $ip;
+
+        try {
+            $ch = curl_init();
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($ch, CURLOPT_TIMEOUT, 500);
+            // 为保证第三方服务器与微信服务器之间数据传输的安全性，所有微信接口采用https方式调用，必须使用下面2行代码打开ssl安全校验。
+            // 如果在部署过程中代码在此处验证失败，请到 http://curl.haxx.se/ca/cacert.pem 下载新的证书判别文件。
+            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+            curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+            curl_setopt($ch, CURLOPT_URL, $url);
+            curl_setopt($ch, CURLOPT_POST, 0);
+
+            $result = curl_exec($ch);
+            curl_close($ch);
+
+            $result = json_decode($result, true);
+            if (!is_array($result) || isset($result['code'])) {
+                throw new Exception('解析IPv6信息异常：' . $ip);
+            }
+
+            return $result;
+        } catch (\Exception $e) {
+            \Log::error($e->getMessage());
+
+            return [];
+        }
+    }
+}
+
+// 随机UUID
+if (!function_exists('createGuid')) {
+    function createGuid()
+    {
+        mt_srand((double)microtime() * 10000);
+        $charid = strtoupper(md5(uniqid(rand(), true)));
+        $hyphen = chr(45);
+        $uuid = substr($charid, 0, 8) . $hyphen
+            . substr($charid, 8, 4) . $hyphen
+            . substr($charid, 12, 4) . $hyphen
+            . substr($charid, 16, 4) . $hyphen
+            . substr($charid, 20, 12);
+
+        return strtolower($uuid);
+    }
+}
