@@ -320,6 +320,8 @@
                                                                     <option value="auth_aes128_md5" {{$node->single_protocol == 'auth_aes128_md5' ? 'selected' : ''}}>auth_aes128_md5</option>
                                                                     <option value="auth_aes128_sha1" {{$node->single_protocol == 'auth_aes128_sha1' ? 'selected' : ''}}>auth_aes128_sha1</option>
                                                                     <option value="auth_chain_a" {{$node->single_protocol == 'auth_chain_a' ? 'selected' : ''}}>auth_chain_a</option>
+                                                                    <option value="auth_chain_b" {{$node->single_protocol == 'auth_chain_b' ? 'selected' : ''}}>auth_chain_b</option>
+                                                                    <option value="auth_chain_d" {{$node->single_protocol == 'auth_chain_d' ? 'selected' : ''}}>auth_chain_d</option>
                                                                 </select>
                                                                 <span class="help-block"> 展示和生成配置用，后端配置注意保持一致 </span>
                                                             </div>
