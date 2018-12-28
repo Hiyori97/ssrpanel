@@ -640,7 +640,7 @@ class UserController extends Controller
                 $order->coupon_id = !empty($coupon) ? $coupon->id : 0;
                 $order->origin_amount = $goods->price;
                 $order->amount = $amount;
-                $order->expire_at = date("Y-m-d H:i:s", strtotime("+" . $goods->days . " days", strtotime($user->expire_time)));
+                $order->expire_at = date("Y-m-d H:i:s", strtotime("+" . $goods->days . " days"));
                 $order->is_expire = 0;
                 $order->pay_way = 1;
                 $order->status = 2;
@@ -704,10 +704,10 @@ class UserController extends Controller
                 User::query()->where('id', $user->id)->increment('transfer_enable', $goods->traffic * 1048576);
 
                 // 计算账号过期时间
-                if ($user->expire_time < date('Y-m-d', strtotime("+" . $goods->days . " days"))) {
-                    $expireTime = date('Y-m-d', strtotime("+" . $goods->days . " days"));
+                if ($user->expire_time >= date('Y-m-d', strtotime("now"))) {
+                    $expireTime = date('Y-m-d', strtotime("+" . $goods->days . " days", $user->expire_time));
                 } else {
-                    $expireTime = $user->expire_time;
+                    $expireTime = date('Y-m-d', strtotime("+" . $goods->days . " days"));
                 }
 
                 // 套餐就改流量重置日，流量包不改
