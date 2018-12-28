@@ -12,14 +12,10 @@ class userTrafficWarning extends Mailable
     use Queueable, SerializesModels;
 
     protected $usedPercent;
-    protected $websiteUrl;
-    protected $websiteShopUrl;
 
     public function __construct($usedPercent)
     {
         $this->usedPercent = $usedPercent;
-        $this->websiteUrl = $websiteUrl;
-        $this->websiteShopUrl = $websiteUrl . '/user/goodsList';
     }
 
     public function build()

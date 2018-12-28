@@ -196,8 +196,6 @@ class UserController extends Controller
         }
 
         $view['nodeList'] = $nodeList;
-        $config = $this->systemConfig();
-        $view['reset_traffic'] = $config['reset_traffic'];
 
         return Response::view('user.index', $view);
     }

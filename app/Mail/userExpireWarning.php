@@ -12,14 +12,10 @@ class userExpireWarning extends Mailable
     use Queueable, SerializesModels;
 
     protected $lastCanUseDays;
-    protected $websiteUrl;
-    protected $websiteShopUrl;
 
     public function __construct($lastCanUseDays)
     {
         $this->lastCanUseDays = $lastCanUseDays;
-        $this->websiteUrl = $websiteUrl;
-        $this->websiteShopUrl = $websiteUrl . '/user/goodsList';
     }
 
     public function build()

@@ -46,7 +46,7 @@
                                             <tr style="padding:0;text-align:left;vertical-align:top">
                                                 <th style="Margin:0;color:#333;font-family:Helvetica,Arial,sans-serif;font-size:16px;font-weight:400;line-height:19px;margin:0;padding:0;text-align:left">
                                                     <h6 style="Margin:0;Margin-bottom:10px;color:#f3f3f3;font-family:Helvetica,Arial,sans-serif;font-size:18px;font-weight:400;line-height:1.3;margin:0;margin-bottom:8px;margin-top:8px;padding:0;text-align:left;word-wrap:normal">
-                                                        <a href="{{$websiteUrl}}" style="Margin:0;color:#f3f3f3;font-family:Helvetica,Arial,sans-serif;font-weight:400;line-height:1.3;margin:0;padding:0;text-align:left;text-decoration:none" target="_blank">
+                                                        <a href="#" style="Margin:0;color:#f3f3f3;font-family:Helvetica,Arial,sans-serif;font-weight:400;line-height:1.3;margin:0;padding:0;text-align:left;text-decoration:none" target="_blank">
                                                             流量警告
                                                         </a>
                                                     </h6>
