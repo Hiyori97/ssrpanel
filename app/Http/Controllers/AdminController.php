@@ -340,7 +340,7 @@ class AdminController extends Controller
             $port = intval($request->get('port'));
             $passwd = $request->get('passwd');
             $vmess_id = $request->get('vmess_id') ? $request->get('vmess_id') : createGuid();
-            $transfer_enable = $request->get('transfer_enable');
+            $transfer_enable = (float)$request->get('transfer_enable');
             $enable = intval($request->get('enable'));
             $method = $request->get('method');
             $protocol = $request->get('protocol');
