@@ -705,7 +705,7 @@ class UserController extends Controller
 
                 // 计算账号过期时间
                 if ($user->expire_time >= date('Y-m-d', strtotime("now"))) {
-                    $expireTime = date('Y-m-d', strtotime("+" . $goods->days . " days", $user->expire_time));
+                    $expireTime = date('Y-m-d', strtotime("+" . $goods->days . " days", strtotime($user->expire_time)));
                 } else {
                     $expireTime = date('Y-m-d', strtotime("+" . $goods->days . " days"));
                 }
