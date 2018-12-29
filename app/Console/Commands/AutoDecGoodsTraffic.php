@@ -28,7 +28,9 @@ class AutoDecGoodsTraffic extends Command
         $jobStartTime = microtime(true);
 
         // 扣减用户到期商品的流量
-        $this->decGoodsTraffic();
+        if (self::$systemConfig['reset_traffic']) {
+            $this->decGoodsTraffic();
+        }
 
         $jobEndTime = microtime(true);
         $jobUsedTime = round(($jobEndTime - $jobStartTime), 4);
