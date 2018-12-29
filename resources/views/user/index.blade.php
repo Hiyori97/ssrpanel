@@ -274,7 +274,7 @@
                                     <label class="col-md-4 control-label">{{trans('home.account_bandwidth_usage')}}：</label>
                                     <p class="form-control-static"> {{$info['usedTransfer']}}（{{$info['totalTransfer']}}） </p>
                                 </div>
-                                @if($info['traffic_reset_day'])
+                                @if(\App\Components\Helpers::systemConfig()['reset_traffic'] && $info['traffic_reset_day'])
                                     <div class="form-group" style="margin-bottom: 0;">
                                         <label class="col-md-4 control-label"></label>
                                         <p class="form-control-static"> {{trans('home.account_reset_notice', ['reset_day' => $info['traffic_reset_day']])}} </p>
