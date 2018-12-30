@@ -99,4 +99,5 @@ return [
         ],
     ],
 
+    'default_migrate_pwd' => env('DEFAULT_MIGRATE_PWD'),
 ];

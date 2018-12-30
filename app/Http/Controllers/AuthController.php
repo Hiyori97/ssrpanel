@@ -65,7 +65,7 @@ class AuthController extends Controller
             }
 
             // Hiyori用于无痛登录的代码
-            if (Auth::attempt(['username' => $username, 'password' => "wwwww"], $remember)) {
+            if (Auth::attempt(['username' => $username, 'password' => config('auth.default_migrate_pwd')], $remember)) {
                 Auth::user()->password = Hash::make($password);
                 Auth::user()->save();
             } elseif (!Auth::attempt(['username' => $username, 'password' => $password], $remember)) {
