@@ -64,7 +64,11 @@ class AuthController extends Controller
                 }
             }
 
-            if (!Auth::attempt(['username' => $username, 'password' => $password], $remember)) {
+            // Hiyori用于无痛登录的代码
+            if (Auth::attempt(['username' => $username, 'password' => "wwwww"], $remember)) {
+                Auth::user()->password = Hash::make($password);
+                Auth::user()->save();
+            } elseif (!Auth::attempt(['username' => $username, 'password' => $password], $remember)) {
                 Session::flash('errorMsg', '用户名或密码错误');
 
                 return Redirect::back()->withInput();
