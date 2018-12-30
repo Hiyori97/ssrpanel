@@ -20,11 +20,11 @@ class upgradeUserPassword extends Command
     public function handle()
     {
         Log::info('----------------------------【升级用户登录密码】开始----------------------------');
-        
+
         // 将用户的登录密码由原有的md5升级为hash，统一升级为与用户名相同的密码
         $userList = User::query()->get();
         foreach ($userList as $user) {
-            User::query()->where('id', $user->id)->update(['password' => Hash::make($user->username)]);
+            User::query()->where('id', $user->id)->update(['password' => Hash::make(config('auth.default_migrate_pwd'))]);
             Log::info('----------------------------升级用户[' . $user->username . ']的登录密码----------------------------');
         }
 
