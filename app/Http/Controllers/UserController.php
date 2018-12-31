@@ -640,7 +640,7 @@ class UserController extends Controller
                 $order->coupon_id = !empty($coupon) ? $coupon->id : 0;
                 $order->origin_amount = $goods->price;
                 $order->amount = $amount;
-                $order->expire_at = date("Y-m-d H:i:s", strtotime("+" . $goods->days . " days"));
+                $order->expire_at = date("Y-m-d H:i:s", strtotime("+" . $goods->days . " days", strtotime($user->expire_time)));
                 $order->is_expire = 0;
                 $order->pay_way = 1;
                 $order->status = 2;
