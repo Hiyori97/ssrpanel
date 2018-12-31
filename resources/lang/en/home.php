@@ -179,6 +179,7 @@ return [
     'logout'                          => 'Log Out',
     'promote_link'                    => 'With your promotion link registration and activation, both of you will receive :traffic traffic awards; when they are consumed, you will receive :referral_percent% of their consumption amount as a reward.',
     'promote_invite_code'             => 'With your invite code registration and activation, both of you will receive :traffic traffic awards; when they are consumed, you will receive :referral_percent% of their consumption amount as a reward.',
+    'promote_invite_code_no_referral' => 'With your invite code registration and activation, both of you will receive :traffic traffic awards.',
     'invite_user_title'               => 'Invitation record',
     'invite_user_username'            => 'Username',
     'invite_user_created_at'          => 'Registration time',

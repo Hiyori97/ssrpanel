@@ -7,7 +7,11 @@
         <div class="row">
             <div class="col-md-12">
                 <div class="note note-info">
-                    <p>{{trans('home.promote_invite_code', ['traffic' => $referral_traffic, 'referral_percent' => $referral_percent * 100])}}</p>
+                    @if($referral_percent)
+                        <p>{{trans('home.promote_invite_code', ['traffic' => $referral_traffic, 'referral_percent' => $referral_percent * 100])}}</p>
+                    @else
+                        <p>{{trans('home.promote_invite_code_no_referral', ['traffic' => $referral_traffic])}}</p>
+                    @endif
                 </div>
             </div>
         </div>
