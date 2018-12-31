@@ -121,7 +121,7 @@
                                                         @else
                                                             <li> <a href="javascript:onlineInstallWarning();">点击此处在线安装</a></li>
                                                         @endif
-                                                        <li> 请从站长处获取 App Store 账号密码 </li>
+                                                        <li> 请用PP助手安装 Shadowrocket </li>
                                                         <li> 打开 Shadowrocket，点击右上角 “+”号 添加节点，类型选择 Subscribe </li>
                                                         <li> 完整复制本页上方 “订阅服务” 处地址，将其粘贴至 “URL”栏，点击右上角 “完成” </li>
                                                         <li> 左划新增的服务器订阅，点击 “更新” </li>
