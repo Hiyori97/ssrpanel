@@ -698,7 +698,7 @@ class UserController extends Controller
 
                 // 写入用户流量变动记录
                 $user = User::query()->where('id', $user->id)->first(); // 重新取出user信息
-                Helpers::addUserTrafficModifyLog($user->id, $order->oid, $user->transfer_enable, ($user->transfer_enable + $goods->traffic * 1048576), '[余额支付]用户购买商品，加上流量');
+                Helpers::addUserTrafficModifyLog($user->id, $order->oid, $user->transfer_enable, (float)($user->transfer_enable + $goods->traffic * 1048576), '[余额支付]用户购买商品，加上流量');
 
                 // 把商品的流量加到账号上
                 User::query()->where('id', $user->id)->increment('transfer_enable', $goods->traffic * 1048576);
