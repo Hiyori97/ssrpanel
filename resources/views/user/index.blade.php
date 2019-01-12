@@ -44,9 +44,6 @@
                             </div>
                             <div class="portlet-body">
                                 <div class="mt-clipboard-container" style="padding-top:0px;">
-                                    <div class="alert alert-danger">
-                                        <p> {{trans('home.subscribe_warning')}} </p>
-                                    </div>
                                     @if($subscribe_status)
                                         <input type="text" id="mt-target-1" class="form-control" value="{{$link}}" />
                                         <a href="javascript:exchangeSubscribe();" class="btn green">
@@ -297,6 +294,7 @@
                         </form>
                     </div>
                 </div>
+
                 @if(\App\Components\Helpers::systemConfig()['is_push_bear'] && \App\Components\Helpers::systemConfig()['push_bear_qrcode'])
                     <div class="portlet light">
                         <div class="portlet-title">
@@ -332,6 +330,7 @@
                         </div>
                     </div>
                 </div>
+
             </div>
         </div>
 
