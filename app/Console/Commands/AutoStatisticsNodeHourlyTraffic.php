@@ -49,7 +49,7 @@ class AutoStatisticsNodeHourlyTraffic extends Command
         $obj->node_id = $node_id;
         $obj->u = $u;
         $obj->d = $d;
-        $obj->total = $total;
+        $obj->total = (float)$total;
         $obj->traffic = $traffic;
         $obj->save();
     }
